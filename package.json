@@ -1,0 +1,30 @@
+{
+  "name": "quindar-proxy",
+  "version": "0.0.1",
+  "description": "Quindar is a space mission operations platform supported by Audacy",
+  "main": "index.js",
+  "scripts": {
+	"start": "node index.js",
+	"stop": "pkill --signal SIGINT node"	
+  },
+  "dependencies": {
+    "express": "^4.13.3"
+  },
+  "engines": {
+    "node": "4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quindar/quindar-proxy"
+  },
+  "keywords": [
+    "node",
+	"quindar",
+    "express"
+  ],
+  "author": "Quindar by Audacy",
+  "contributors": [
+    "Audacy <quindar@audacy.space> (http://audacy.space)"
+  ],
+  "license": "MIT"
+}
