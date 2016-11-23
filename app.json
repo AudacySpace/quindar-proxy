@@ -1,0 +1,7 @@
+{
+  "name": "Node.js Quindar Proxy",
+  "description": "A MEAN stack space mission operations platform (backend proxy server)",
+  "repository": "https://github.com/quindar/quindar-ux",
+  "logo": "https://quindar.space/public/media/logos/quindar_regular.svg",
+  "keywords": ["node", "express"]
+}
