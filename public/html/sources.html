@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="quindar.space">
+    <title>Quindar Proxy</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../css/quindar-proxy.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="row">
+			
+			<h1> Data Sources</h1>
+
+			<div class="row col-md-6" style="margin-top:40px;">
+
+				<p> <b> Connection String </b> </p>
+				<p>  <input type="text" id="generatedDataStreaming" style="min-width: 40%; min-height: 50%"> </p>
+				<p>  <input type="text" id="generatedDataStreaming" style="min-width: 40%; min-height: 50%"> </p>
+				<p>  <input type="text" id="generatedDataStreaming" style="min-width: 40%; min-height: 50%"> </p>
+
+				<p>
+					<button type="radio" id="addingStreaming" ng-click="add('streaming')" class="btn btn-info btn-lg">
+						<i class="glyphicon glyphicon-plus"></i> Add
+					</button>
+				</p>
+
+			</div>
+
+			<div class="row col-md-6" style="margin-top:40px;">
+
+				<p> <b> Config File </b> </p>
+				<p><select name="dataStream" style="min-width: 40%; min-height: 50%"></select>
+					<button type="button" class="btn btn-default btn-sm">
+					<span class="glyphicon glyphicon-file"></span> File Upload
+					</button>
+				</p>
+				<p><select name="dataStream" style="min-width: 40%; min-height: 50%"></select>
+					<button type="button" class="btn btn-default btn-sm">
+						<span class="glyphicon glyphicon-file"></span> File Upload
+					</button>
+				</p>
+				<p><select name="dataStream" style="min-width: 40%; min-height: 50%"></select>
+					<button type="button" class="btn btn-default btn-sm">
+						<span class="glyphicon glyphicon-file"></span> File Upload
+					</button>
+				</p>
+
+			</div>
+
+		</div>
+
+    </div>
+
+
+
+
+    <!-- jQuery -->
+    <script src="../scripts/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../scripts/bootstrap.min.js"></script>
+
+</body>
+
+</html>
