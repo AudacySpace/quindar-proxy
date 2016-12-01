@@ -21,6 +21,7 @@ app.get('/', function(request, response) {
 	response.end();
 });
 
+//Listen to the GMAT server streaming data
 io.on('connection', function(socket){
 	console.log('socket.io server connected.');
 
