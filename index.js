@@ -51,3 +51,5 @@ io.on('connection', function(socket){
 	});
 
 });
+
+require('./app/scripts/parseExcel.js')(app);
