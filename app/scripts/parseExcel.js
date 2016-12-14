@@ -16,19 +16,20 @@ module.exports = function(app){
 		  });
 	};
 
-	exceltojson(function(response){
-		var telemetryConfig = new Object();
-		for (i=0; i<response.length; i++) {
-			telemetryConfig[response[i].id] = response[i];
-		}
+//uncomment after changing pm2 watch command
+	// exceltojson(function(response){
+	// 	var telemetryConfig = new Object();
+	// 	for (i=0; i<response.length; i++) {
+	// 		telemetryConfig[response[i].id] = response[i];
+	// 	}
 
-		fs.writeFile("./config/telemetryConfig.js", "module.exports = \n" + JSON.stringify(telemetryConfig, null, 4) + "\n" , function(err) {
-		    if(err) {
-		        return console.log(err);
-		    }
-		    console.log("The config file was saved!");
-		}); 
+	// 	fs.writeFile("./config/telemetryConfig.js", "module.exports = \n" + JSON.stringify(telemetryConfig, null, 4) + "\n" , function(err) {
+	// 	    if(err) {
+	// 	        return console.log(err);
+	// 	    }
+	// 	    console.log("The config file was saved!");
+	// 	}); 
 
-	});
+	// });
 
 };
