@@ -10,7 +10,24 @@ var io = require('socket.io').listen(app.listen(app.get('port'), function(){
 }));
 
 //Connect to the mongo database
-mongoose.connect('mongodb://qsvr.quindar.space:27017/quindar');
+mongoose.connect('mongodb://127.0.0.1:27017/quindar');
+
+// CONNECTION EVENTS
+// When successfully connected
+mongoose.connection.on('connected', function () {
+ console.log('Mongoose default connection open\n');
+});
+
+// If the connection throws an error
+mongoose.connection.on('error',function (err) {
+  console.log('Mongoose default connection error: ' + err + '\n');
+});
+
+// When the connection is disconnected
+mongoose.connection.on('disconnected', function () {
+  console.log('Mongoose default connection disconnected');
+});
+
 //Load the model for SatData1
 var satData1 = require('./public/model/satData1');
 
