@@ -10,7 +10,12 @@ var io = require('socket.io').listen(app.listen(app.get('port'), function(){
 }));
 
 //Connect to the mongo database
-mongoose.connect('mongodb://qsvr.quindar.space:27017/quindar');
+
+//uncomment this while testing on localhost
+//mongoose.connect('mongodb://qsvr.quindar.space:27017/quindar');
+
+//comment the following statement while testing on localhost
+mongoose.connect('mongodb://127.0.0.1:27017/quindar');
 
 // CONNECTION EVENTS
 // When successfully connected
