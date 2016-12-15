@@ -10,7 +10,7 @@ var io = require('socket.io').listen(app.listen(app.get('port'), function(){
 }));
 
 //Connect to the mongo database
-mongoose.connect('mongodb://127.0.0.1:27017/quindar');
+mongoose.connect('mongodb://qsvr.quindar.space:27017/quindar');
 
 // CONNECTION EVENTS
 // When successfully connected
@@ -29,7 +29,7 @@ mongoose.connection.on('disconnected', function () {
 });
 
 //Load the model for SatData1
-var satData1 = require('./public/model/satData1');
+var satData1 = require('./app/model/satData1');
 
 app.use('/public', express.static('public'));
 
@@ -69,4 +69,4 @@ io.on('connection', function(socket){
 
 });
 
-require('./app/scripts/parseExcel.js')(app);
+require('./app/scripts/parseExcel.js')();
