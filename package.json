@@ -12,7 +12,9 @@
     "socket.io": "^1.6.0",
     "mongoose": "^4.4.12",
     "xlsx-to-json": "0.2.4",
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "julian": "0.1.0",
+    "async": "2.1.4"
   },
   "engines": {
     "node": "4.0.0"
