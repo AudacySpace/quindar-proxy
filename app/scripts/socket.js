@@ -1,5 +1,6 @@
 module.exports = function(io, julian, async) {
 
+	var math = require('mathjs');
 	var Config = require('../model/configuration');
 	var position = require('../model/position');
 	var source = "";
@@ -82,9 +83,16 @@ module.exports = function(io, julian, async) {
 							}
 
 							if(!configuration.contents[point].value) {
+								//value mode, store the value in the data stream as it is
 								newPosition[point].value = parsedData[point];
 							} else {
-								newPosition[point].value = null;
+								//expression mode,  evaluate the expression and store it
+								try {
+									var code = math.compile(configuration.contents[point].value);
+									newPosition[point].value = code.eval(parsedData);
+								} catch (e) {
+									console.log("Error evaluating expressions using Mathjs: " + e)
+								}
 							}
 							
 						}
