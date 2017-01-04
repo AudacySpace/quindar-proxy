@@ -2,10 +2,10 @@
 database (collection name is "configurations")
 */
 
-module.exports = function(){
+module.exports = function(req,res){
 
 	var xlsxj = require("xlsx-to-json");
-	var filepath = "./app/uploads/GMAT.xlsx";
+	var filepath = req.file.path;
 	var Config = require('../model/configuration');
 
 	try { 
@@ -21,9 +21,9 @@ module.exports = function(){
 					telemetryConfig[result[i].id] = result[i];
 				}
 
-				var filename = filepath.substring(filepath.lastIndexOf('/')+1).split('.')[0];
+				//var filename = filepath.substring(filepath.lastIndexOf('/')+1).split('.')[0];
 
-				Config.findOne({ 'source' : filename }, function(err, config) {
+				Config.findOne({ 'source' : req.body.sourcename }, function(err, config) {
                     if (err)
                         console.log("Error finding configurations in DB: " + err);
 
@@ -34,24 +34,26 @@ module.exports = function(){
                     	config.save(function(err) {
 		  					if (err) throw err;
 		  		
-		  					console.log('Configuration data updated successfully for ' + filename);
+		  					console.log('Configuration data updated successfully for ' + req.body.sourcename);
 		  				});                       
                     } else {
                     	var newConfig = new Config();
-			  			newConfig.source = filename;
+			  			newConfig.source = req.body.sourcename;
 			  			newConfig.contents = telemetryConfig;
 
 			  			newConfig.save(function(err) {
 		  					if (err) throw err;
 		  		
-		  					console.log('Configuration data saved successfully for ' + filename);
+		  					console.log('Configuration data saved successfully for ' + req.body.sourcename);
 		  				});
                     }
                 });
 			}
 		});
 	} catch(e) {
-		console.log("Corrupted excel file at : " + filepath);
+		console.error("Corrupted excel file at : " + filepath);
 	}
 
+	res.redirect('/public/html/sources.html');
+	res.end();
 };
