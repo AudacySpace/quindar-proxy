@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var bodyParser = require('body-parser');
 var server = require('http').createServer(app);
 var mongoose = require('mongoose');
 var julian = require('julian');
@@ -7,16 +8,13 @@ var async = require('async');
 
 app.set('port', (process.env.PORT || 5000));
 
+app.use(bodyParser.json()); 
+
 var io = require('socket.io').listen(app.listen(app.get('port'), function(){
 	console.log('Server listening at port %d', app.get('port'));
 }));
 
 //Connect to the mongo database
-
-//uncomment this while testing on localhost
-//mongoose.connect('mongodb://qsvr.quindar.space:27017/quindar');
-
-//comment the following statement while testing on localhost
 mongoose.connect('mongodb://127.0.0.1:27017/quindar');
 
 // CONNECTION EVENTS
@@ -37,10 +35,7 @@ mongoose.connection.on('disconnected', function () {
 
 app.use('/public', express.static('public'));
 
-app.get('/', function(request, response) {
-	response.writeHead(301, {location: '/public/html/index.html'});
-	response.end();
-});
+// routes ======================================================================
+require('./app/routes/routes.js')(app);
 
-require('./app/scripts/parseExcel.js')();
 require('./app/scripts/socket.js')(io, julian, async);
