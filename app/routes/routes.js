@@ -28,14 +28,14 @@
         upload(req,res,function(err){
             if(err){
                 console.error(err);
-                res.redirect('/public/html/sources.html');
-                res.end();
+                res.render('sources');
+                return;
             }
             /** Multer gives us file info in req.file object */
             if(!req.file){
                 console.error("No file passed");
-                res.redirect('/public/html/sources.html');
-                res.end();
+                res.render('sources');
+                return;
             } else {
                 console.log("File uploaded");
                 parse(req,res);
@@ -44,9 +44,20 @@
        
     });
 	
-	app.get('/', function(request, response) {
-        response.writeHead(301, {location: '/public/html/index.html'});
-        response.end();
+    app.get('/',function(req,res){
+        res.render("index");
+    });
+
+    app.get('/sources',function(req,res){
+        res.render("sources");
+    });
+
+    app.get('/navbar',function(req,res){
+        res.render("navbar");
+    });
+
+    app.get('/help',function(req,res){
+        res.render("help");
     });
 
 }

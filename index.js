@@ -7,7 +7,7 @@ var julian = require('julian');
 var async = require('async');
 
 app.set('port', (process.env.PORT || 5000));
-
+app.set('view engine', 'ejs');
 app.use(bodyParser.json()); 
 
 var io = require('socket.io').listen(app.listen(app.get('port'), function(){
@@ -33,9 +33,10 @@ mongoose.connection.on('disconnected', function () {
   console.log('Mongoose default connection disconnected');
 });
 
-app.use('/public', express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
 // routes ======================================================================
 require('./app/routes/routes.js')(app);
 
+// script to read socket stream ================================================
 require('./app/scripts/socket.js')(io, julian, async);
