@@ -27,17 +27,15 @@
         
         upload(req,res,function(err){
             if(err){
-                console.error(err);
-                res.render('sources');
+                res.render('sources', {error_code:1,err_desc:err, msg:null});
                 return;
             }
             /** Multer gives us file info in req.file object */
             if(!req.file){
-                console.error("No file passed");
-                res.render('sources');
+                res.render('sources', {error_code:1,err_desc:"No file passed. Please upload an xlsx file.", msg:null});
                 return;
             } else {
-                console.log("File uploaded");
+                res.render("sources", {error_code:0,err_desc:null,msg:"File uploaded successfully"})
                 parse(req,res);
             }
         })
