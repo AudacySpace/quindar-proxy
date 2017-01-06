@@ -14,7 +14,7 @@ module.exports = function(req,res){
 			output: null
 		}, function(err, result) {
 			if(err) {
-				console.error("Excel conversion error for " + filepath + " : " + err);
+				console.log("Excel conversion error for " + filepath + " : " + err);
 		    } else {
 		    	var telemetryConfig = new Object();
 		    	for (i=0; i<result.length; i++) {
@@ -49,9 +49,7 @@ module.exports = function(req,res){
 			}
 		});
 	} catch(e) {
-		console.error("Corrupted excel file at : " + filepath);
+		console.log("Corrupted excel file at : " + filepath);
 	}
 
-	res.render('sources');
-	res.end();
 };
