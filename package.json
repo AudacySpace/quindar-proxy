@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "express": "^4.13.3",
+    "ejs": "~2.5.2",
     "socket.io": "^1.6.0",
     "mongoose": "^4.4.12",
     "xlsx-to-json": "0.2.4",

@@ -21,8 +21,6 @@ module.exports = function(req,res){
 					telemetryConfig[result[i].id] = result[i];
 				}
 
-				//var filename = filepath.substring(filepath.lastIndexOf('/')+1).split('.')[0];
-
 				Config.findOne({ 'source' : req.body.sourcename }, function(err, config) {
                     if (err)
                         console.log("Error finding configurations in DB: " + err);
@@ -54,6 +52,6 @@ module.exports = function(req,res){
 		console.error("Corrupted excel file at : " + filepath);
 	}
 
-	res.redirect('/public/html/sources.html');
+	res.render('sources');
 	res.end();
 };
