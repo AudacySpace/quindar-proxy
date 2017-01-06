@@ -9,10 +9,10 @@
     <title>Quindar Proxy</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="../css/quindar-proxy.css" rel="stylesheet">
+    <link href="/css/quindar-proxy.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -51,24 +51,25 @@
 		        </tbody>
 	    	</table>
 	  	</form>
+	  	<p style="color:red" ><%= typeof data!='undefined' ? data : '' %></p> 
 	</div>
 
 	<!-- jQuery -->
-    <script src="../scripts/jquery.js"></script>
+    <script src="/scripts/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="../scripts/bootstrap.min.js"></script>
+    <script src="/scripts/bootstrap.min.js"></script>
     <script>
 		$("#file").change(function(){
 			var filename = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
 			$('#filename').val(filename);
 		});
-		$('.upload').click(function(){
-			if($('#filename').val() == ""){
-				alert("Please choose a file");
-				return false;
-			}
-		});
+		// $('.upload').click(function(){
+		// 	if($('#filename').val() == ""){
+		// 		alert("Please choose a file");
+		// 		return false;
+		// 	}
+		// });
 	</script>
 
 </body>
