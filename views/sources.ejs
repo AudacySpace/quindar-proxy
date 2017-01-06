@@ -51,7 +51,7 @@
 		        </tbody>
 	    	</table>
 	  	</form>
-	  	<p style="color:red" ><%= typeof data!='undefined' ? data : '' %></p> 
+		<center><p><%= typeof error_code!='undefined' ? (error_code!=1 ? msg : err_desc) : "" %></p></center>
 	</div>
 
 	<!-- jQuery -->
@@ -64,12 +64,6 @@
 			var filename = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
 			$('#filename').val(filename);
 		});
-		// $('.upload').click(function(){
-		// 	if($('#filename').val() == ""){
-		// 		alert("Please choose a file");
-		// 		return false;
-		// 	}
-		// });
 	</script>
 
 </body>
