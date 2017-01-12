@@ -21,28 +21,30 @@ module.exports = function(req,res){
 					telemetryConfig[result[i].id] = result[i];
 				}
 
-				Config.findOne({ 'source' : req.body.sourcename }, function(err, config) {
+				Config.findOne({ 'source.ipaddress' : req.body.sourceip }, function(err, config) {
                     if (err)
                         console.log("Error finding configurations in DB: " + err);
 
                     if (config) {
                     	// if there is an existing configuration for source, update it
                     	config.contents = telemetryConfig;
+                    	config.source.name = req.body.sourcename;
 
                     	config.save(function(err) {
 		  					if (err) throw err;
 		  		
-		  					console.log('Configuration data updated successfully for ' + req.body.sourcename);
+		  					console.log('Configuration data updated successfully for ' + req.body.sourceip);
 		  				});                       
                     } else {
                     	var newConfig = new Config();
-			  			newConfig.source = req.body.sourcename;
+			  			newConfig.source.name = req.body.sourcename;
 			  			newConfig.contents = telemetryConfig;
+			  			newConfig.source.ipaddress = req.body.sourceip;
 
 			  			newConfig.save(function(err) {
 		  					if (err) throw err;
 		  		
-		  					console.log('Configuration data saved successfully for ' + req.body.sourcename);
+		  					console.log('Configuration data saved successfully for ' + req.body.sourceip);
 		  				});
                     }
                 });

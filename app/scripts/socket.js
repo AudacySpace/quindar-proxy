@@ -2,7 +2,7 @@ module.exports = function(io, julian, async) {
 
 	var math = require('mathjs');
 	var Config = require('../model/configuration');
-	var position = require('../model/position');
+	var Position = require('../model/position');
 	var source = "";
 	var configuration = new Config();
 
@@ -11,6 +11,8 @@ module.exports = function(io, julian, async) {
 		console.log('socket.io server connected.');
 
 		socket.on('satData1', function(data){
+			source = socket.handshake.headers['x-real-ip'];
+
 			try {
 			    var parsedData = JSON.parse(data);
 			} catch (e) {
@@ -21,41 +23,32 @@ module.exports = function(io, julian, async) {
 			async.waterfall([
 				//Load the configuration from database
 				function(callback) {
-					//Source of the data stream is identified using vehicleID
-					if (parsedData.vehicleId == "Audacy1") {
-						source = "GMAT";
-						if ( configuration.source != source ) {
-							Config.findOne({ 'source' : source }, function(err, config) {
-			                    if (err) {
-			                        console.log("Error finding configurations in DB: " + err);
-			                    	//throw err;
-			                    	return callback(err);
-			                    }
 
-			                    if (config) {
-			                    	// if there is an existing configuration for source, update it
-			                    	configuration.contents = config.contents;
-			                    	configuration.source = source;
-			                    	console.log("Loaded configuration for " + source);
-			                    	callback(null, configuration);
-			                      
-			                    } else {
-			                    	console.log("There is no defined configuration for " + source);
-			                    	callback(null, false);
-			                    }
-			                });
-						} else {
-							callback(null, configuration);
-						}
-					} else {
-						callback(null, false);
-					}
+					Config.findOne({ 'source.ipaddress' : source }, function(err, config) {
+						if (err) {
+			                console.log("Error finding configurations in DB: " + err);
+			                return callback(err);
+			            }
+
+			            if (config) {
+			                // if there is an existing configuration for source, update it
+			                configuration.contents = config.contents;
+		                    configuration.source.name = config.source.name;
+		                    configuration.source.ipaddress = source;
+		                    console.log("Loaded configuration for " + source);
+		                    callback(null, configuration);
+
+		                } else {
+		                    console.log("There is no defined configuration for " + source);
+		                    callback(null, false);
+		                }
+		            });
 				},
 
 				//Format the datastream as per configuration, if present
 				function(configuration, callback) {
-					if(configuration.source){
-						var newPosition = new position();			
+					if(configuration){
+						var newPosition = new Position();			
 
 						for (var point in configuration.contents) {
 
