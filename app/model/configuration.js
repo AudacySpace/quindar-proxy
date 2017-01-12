@@ -3,7 +3,10 @@ var mongoose = require('mongoose');
 // define the schema for our user model
 var configSchema = mongoose.Schema({
 
-    source : String,
+    source : {
+    	name : String,
+    	ipaddress : String
+    },
     contents : Object
 
 });
