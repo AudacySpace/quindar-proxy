@@ -22,10 +22,10 @@
     <![endif]-->
 </head>
 <body>
-	<div class="container" style="background-color:#efefef">
+	<div class="container" style="background-color:#efefef; margin-bottom: 40px;">
 		<center><h2>Data Sources</h2></center>
     	<form action="/upload" method="post" enctype="multipart/form-data">
-    		<table class="table table-hover" id="table">
+    		<table class="table table-hover" id="table1">
     			<thead>
 		            <tr>
 		                <th>Source Name</th>
@@ -34,7 +34,7 @@
 		                <th>Upload</th>
 		            </tr>
 		        </thead>
-		        <tbody class="details" id="body">
+		        <tbody class="details" id="body1">
 		              <tr>
 		                   <td><input type="text" name="sourcename" class="form-control sourcename" required></td>
 		                   <td><input type="text" name="sourceip" class="form-control sourceip" required></td>
@@ -53,7 +53,30 @@
 		        </tbody>
 	    	</table>
 	  	</form>
-		<center><p><%= typeof error_code!='undefined' ? (error_code!=1 ? msg : err_desc) : "" %></p></center>
+		<center><p><%= typeof err_desc!='undefined' ? err_desc : "" %></p></center>
+	</div>
+
+	<div class="container" style="background-color:#efefef">
+		<% if(configlist.length > 0) { %>
+		<table class="table table-hover" id="table2">
+    		<thead>
+		        <tr>
+		            <th>Source Name</th>
+	                <th>IP Address</th>
+	                <th>File Name</th>
+	            </tr>
+	        </thead>
+	        <tbody class="details" id="body2">
+		     	<% for (var i=0;i<configlist.length;i++) { %>
+		     	<tr>
+		     	    <td><%= configlist[i].source.name %></td>
+		            <td><%= configlist[i].source.ipaddress %></td>
+	                <td><%= configlist[i].source.filename %></td>
+		        </tr>
+      	    	<% } %>
+		    </tbody>
+	    </table>
+		<% } %>
 	</div>
 
 	<!-- jQuery -->
