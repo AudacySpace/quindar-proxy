@@ -5,7 +5,8 @@ var configSchema = mongoose.Schema({
 
     source : {
     	name : String,
-    	ipaddress : String
+    	ipaddress : String,
+    	filename :  String
     },
     contents : Object
 
