@@ -53,7 +53,7 @@
 		        </tbody>
 	    	</table>
 	  	</form>
-		<center><p><%= typeof err_desc!='undefined' ? err_desc : "" %></p></center>
+		<center><p id="error"><%= typeof err_desc!='undefined' ? err_desc : "" %></p></center>
 	</div>
 
 	<div class="container" style="background-color:#efefef">
@@ -92,7 +92,7 @@
 		$('.upload').click(function(){
 			var ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
 			if($('.sourceip').val() != "" && (! $('.sourceip').val().match(ipformat))) {
-				alert("You have entered an invalid IP address");
+				$('#error').html("Error: Invalid IP Address");
 				return false;
 			}
 		});
