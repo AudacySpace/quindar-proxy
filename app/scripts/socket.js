@@ -2,7 +2,7 @@ module.exports = function(io, julian, async) {
 
 	var math = require('mathjs');
 	var Config = require('../model/configuration');
-	var Position = require('../model/position');
+	var Telemetry = require('../model/telemetry');
 	var source = "";
 	var configuration = new Config();
 
@@ -48,41 +48,41 @@ module.exports = function(io, julian, async) {
 				//Format the datastream as per configuration, if present
 				function(configuration, callback) {
 					if(configuration){
-						var newPosition = new Position();			
+						var newTelementry = new Telemetry();			
 
 						for (var point in configuration.contents) {
 
-							newPosition[point].notes = configuration.contents[point].notes;
-							newPosition[point].category = configuration.contents[point].category;
-							newPosition[point].name = configuration.contents[point].name;
-							newPosition[point].units = configuration.contents[point].units;
+							newTelementry[point].notes = configuration.contents[point].notes;
+							newTelementry[point].category = configuration.contents[point].category;
+							newTelementry[point].name = configuration.contents[point].name;
+							newTelementry[point].units = configuration.contents[point].units;
 
 							if(configuration.contents[point].datatype == "date"){
 								try {
 									parsedData[point] = julian.toDate(parsedData[point]);
-									newPosition[point].alarm_low = julian.toDate(configuration.contents[point].alarm_low);
-									newPosition[point].alarm_high = julian.toDate(configuration.contents[point].alarm_high);
-									newPosition[point].warn_low = julian.toDate(configuration.contents[point].warn_low);
-									newPosition[point].warn_high = julian.toDate(configuration.contents[point].warn_high);
+									newTelementry[point].alarm_low = julian.toDate(configuration.contents[point].alarm_low);
+									newTelementry[point].alarm_high = julian.toDate(configuration.contents[point].alarm_high);
+									newTelementry[point].warn_low = julian.toDate(configuration.contents[point].warn_low);
+									newTelementry[point].warn_high = julian.toDate(configuration.contents[point].warn_high);
 								} catch (e) {
 									console.log("Error converting julian date: " + e);
 								}
 
 							} else {
-								newPosition[point].alarm_low = configuration.contents[point].alarm_low;
-								newPosition[point].alarm_high = configuration.contents[point].alarm_high;
-								newPosition[point].warn_low = configuration.contents[point].warn_low;
-								newPosition[point].warn_high = configuration.contents[point].warn_high;
+								newTelementry[point].alarm_low = configuration.contents[point].alarm_low;
+								newTelementry[point].alarm_high = configuration.contents[point].alarm_high;
+								newTelementry[point].warn_low = configuration.contents[point].warn_low;
+								newTelementry[point].warn_high = configuration.contents[point].warn_high;
 							}
 
 							if(!configuration.contents[point].value) {
 								//value mode, store the value in the data stream as it is
-								newPosition[point].value = parsedData[point];
+								newTelementry[point].value = parsedData[point];
 							} else {
 								//expression mode,  evaluate the expression and store it
 								try {
 									var code = math.compile(configuration.contents[point].value);
-									newPosition[point].value = code.eval(parsedData);
+									newTelementry[point].value = code.eval(parsedData);
 								} catch (e) {
 									console.log("Error evaluating expressions using Mathjs: " + e)
 								}
@@ -90,7 +90,7 @@ module.exports = function(io, julian, async) {
 							
 						}
 						
-						newPosition.save(function(err) { 
+						newTelementry.save(function(err) { 
 							if (err) {
 								return callback(err);
 							}
