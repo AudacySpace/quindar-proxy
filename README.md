@@ -8,7 +8,7 @@ For installing Quindar Proxy Server, follow the instructions mentioned in [quind
 ## How to Navigate
 The proxy server contains three tabs on the left sidebar.
 1. Mongo Database - This is GUI for the Mongo database residing on this server.
-2. Data Sources - This gives the ability to add multiple configurations(excel file) for realtime telemetry sources by addding the source IP address and the excel file for configuration. The configuration file should contain defined configuration for each telemetry data point. A sample configuration file is [GMAT.xlsx](app/uploads/GMAT.xlsx). 
+2. Data Sources - This gives the ability to add multiple configurations(excel file) for realtime telemetry sources by addding the source IP address and the excel file for configuration. The configuration file should contain defined configuration for each telemetry data point. [Download](app/uploads/GMAT.xlsx) the sample configuration file. 
 3. Netdata - It is a system for distributed real-time performance and health monitoring. This tab shows real-time parameters of Quindar Proxy server using modern interactive web dashboards.
 
 ## Contributing
