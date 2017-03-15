@@ -14,9 +14,6 @@ The proxy server contains three tabs on the left sidebar.
 ## Contributing
 We encourage you to contribute to Quindar Proxy! Please check out the file [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines about how to proceed.
 
-## Code of Conduct
-Everyone contributing to the repositories under Quindar organization, issue trackers and mailing lists is expected to follow the Quindar [Code of Conduct](CODE_OF_CONDUCT.md). 
-
 ## About Us
 Audacy was launched in 2015 by Stanford graduates, SpaceX veterans, and NASA award winners. Audacy delivers anytime and effortless space connectivity, advancing humanity to a new age of commerce, exploration and discovery. Connect online at https://audacy.space.
 
