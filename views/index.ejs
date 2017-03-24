@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>Quindar Proxy</title>
+    </head>
+    <!-- 
+		To use the readily available admin interfaces for the databse and 
+		message queue within the unified interface of the proxy app, it
+		is necessary to use a frameset that isolates the navigation from the
+		main content. The frameset is deprecated in html5, but it still works. 
+		
+		By default, the content frame is populated with the adminMongo gui.
+	-->
+    <frameset framespacing="0" cols="50,*" noresize frameborder="0">
+        <frame name="proxy-nav"   src="navbar" target="proxy-nav"   >
+        <frame name="proxy-frame" src="/adminMongo"  target="proxy-frame" >
+    </frameset>
+</html>

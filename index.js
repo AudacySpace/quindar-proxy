@@ -1,14 +1,42 @@
-var express = require('express')
-var app = express()
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+var server = require('http').createServer(app);
+var mongoose = require('mongoose');
+var julian = require('julian');
+var async = require('async');
 
-app.set('port', (process.env.PORT || 5000))
-app.use('/public', express.static('public'))
+app.set('port', (process.env.PORT || 5000));
+app.set('view engine', 'ejs');
+app.use(bodyParser.json()); 
 
-app.get('/', function(request, response) {
-	response.writeHead(301, {location: '/public/html/index.html'});
-	response.end();
-})
+var io = require('socket.io').listen(app.listen(app.get('port'), function(){
+	console.log('Server listening at port %d', app.get('port'));
+}));
 
-app.listen(app.get('port'), function() {
-  console.log("Node app is running at port " + app.get('port'))
-})
+//Connect to the mongo database
+mongoose.connect('mongodb://127.0.0.1:27017/quindar');
+
+// CONNECTION EVENTS
+// When successfully connected
+mongoose.connection.on('connected', function () {
+ console.log('Mongoose default connection open\n');
+});
+
+// If the connection throws an error
+mongoose.connection.on('error',function (err) {
+  console.log('Mongoose default connection error: ' + err + '\n');
+});
+
+// When the connection is disconnected
+mongoose.connection.on('disconnected', function () {
+  console.log('Mongoose default connection disconnected');
+});
+
+app.use(express.static(__dirname + '/public'));
+
+// routes ======================================================================
+require('./app/routes/routes.js')(app);
+
+// script to read socket stream ================================================
+require('./app/scripts/socket.js')(io, julian, async);
