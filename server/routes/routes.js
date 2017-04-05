@@ -14,41 +14,21 @@
     });
 
     var upload = multer({ //multer settings
-                    storage: storage,
-                    fileFilter : function(req, file, callback) { //file filter
-                        if (['xlsx'].indexOf(file.originalname.split('.')[file.originalname.split('.').length-1]) === -1) {
-                            return callback(new Error('Wrong extension. Please upload an xlsx file.'));
-                        }
-                        callback(null, true);
-                    }
-                }).single('file');
+        storage: storage,
+        fileFilter : function(req, file, callback) { //file filter
+            if (['xlsx'].indexOf(file.originalname.split('.')[file.originalname.split('.').length-1]) === -1) {
+                return callback(new Error('Wrong extension. Please upload an xlsx file.'));
+            }
+            callback(null, true);
+        }
+    }).single('file');
 
-    /** API path that will upload the files */
-    app.post('/upload', getConfig, function(req, res) {
-        
-        upload(req,res,function(err){
-            if(err){
-                res.render("sources", { err_desc : err, configlist : req.config });
-                return;
-            }
-            /** Multer gives us file info in req.file object */
-            if(!req.file){
-                res.render("sources", { err_desc : "No file passed. Please upload an xlsx file.", configlist : req.config });
-                return;
-            } else {
-                res.redirect('/sources');
-                parse(req,res);
-            }
-        })
-       
-    });
-	
     app.get('/',function(req,res){
         res.render("index");
     });
 
-    app.get('/sources', getConfig, function(req,res){
-        res.render("sources", { configlist : req.config });
+    app.get('/sources', function(req,res){
+        res.render("sources");
     });
 
     app.get('/navbar',function(req,res){
@@ -59,15 +39,27 @@
         res.render("help");
     });
 
-    function getConfig( req, res, next){
+    app.get('/getConfig', function(req,res){
         Config.find({}, 'source', function(err, config) {
             if (err) {
                 console.log("Error finding configurations in DB: " + err);
                 throw err;
             }
-            req.config = config;  
-            next();           
+
+            res.send(config);
         });
-    }
+    });
+
+    app.post('/upload', function(req, res) {
+        upload(req,res,function(err){
+            if(err){
+                res.json({error_code:1,err_desc:err});
+                return;
+            }
+
+            parse(req,res);
+            res.json({error_code:0,err_desc:null});
+        });
+    });
 
 }
