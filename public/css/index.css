@@ -1,5 +1,7 @@
 .md-sidenav-left {
-	width: 50px;
+	min-width: 50px !important;
+ 	width: 50vw !important;
+ 	max-width: 50px !important;
 	min-height : 100vh;
 
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#000000+0,89fbff+100 */
