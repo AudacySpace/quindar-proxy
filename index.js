@@ -39,6 +39,9 @@ mongoose.connection.on('disconnected', function () {
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/app'));
 
+//proxy application status =====================================================
+require('./server/scripts/proxyAppStatus')();
+
 // routes ======================================================================
 require('./server/routes/routes.js')(app);
 
