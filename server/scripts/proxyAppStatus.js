@@ -6,7 +6,7 @@ module.exports = function() {
 	var appStatus = new ProxyStatus();
 	timer = setInterval(function(){
 		var unix = Math.round(+new Date()/1000);
-		appStatus.timestamp =  unix;
+		appStatus.proxytimestamp =  unix;
 		appStatus.save(function(err){
 			if(err){
 				console.log(err);
