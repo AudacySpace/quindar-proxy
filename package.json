@@ -4,20 +4,20 @@
   "description": "Quindar is a space mission operations platform supported by Audacy",
   "main": "index.js",
   "scripts": {
-	"start": "node index.js",
-	"stop": "pkill --signal SIGINT node"	
+    "start": "node index.js",
+    "stop": "pkill --signal SIGINT node"
   },
   "dependencies": {
     "express": "^4.13.3",
     "ejs": "~2.5.2",
     "socket.io": "^1.6.0",
     "mongoose": "^4.4.12",
-    "xlsx-to-json": "0.2.4",
+    "xlsx-to-json-lc": "^0.4.1",
     "fs": "0.0.1-security",
     "julian": "0.1.0",
     "async": "2.1.4",
     "mathjs": "3.8.1",
-    "multer": "1.2.1", 
+    "multer": "1.2.1",
     "body-parser": "^1.15.1"
   },
   "engines": {
@@ -29,7 +29,7 @@
   },
   "keywords": [
     "node",
-	"quindar",
+    "quindar",
     "express"
   ],
   "author": "Quindar by Audacy",
