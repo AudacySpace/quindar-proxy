@@ -4,7 +4,7 @@ database (collection name is "configurations")
 
 module.exports = function(req,res){
 
-	var xlsxj = require("xlsx-to-json");
+	var xlsxj = require("xlsx-to-json-lc");
 	var filepath = req.file.path;
 	var Config = require('../model/configuration');
 
