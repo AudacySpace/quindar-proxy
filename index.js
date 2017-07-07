@@ -7,7 +7,10 @@ var julian = require('julian');
 var async = require('async');
 
 app.set('port', (process.env.PORT || 5000));
+
 app.set('view engine', 'ejs');
+app.set('views', __dirname + '/app/views');
+
 app.use(bodyParser.json()); 
 
 var io = require('socket.io').listen(app.listen(app.get('port'), function(){
@@ -34,9 +37,13 @@ mongoose.connection.on('disconnected', function () {
 });
 
 app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/app'));
+
+//proxy application status =====================================================
+require('./server/scripts/proxyAppStatus')();
 
 // routes ======================================================================
-require('./app/routes/routes.js')(app);
+require('./server/routes/routes.js')(app);
 
 // script to read socket stream ================================================
-require('./app/scripts/socket.js')(io, julian, async);
+require('./server/scripts/socket.js')(io, julian, async);

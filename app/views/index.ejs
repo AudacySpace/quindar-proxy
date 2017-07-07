@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>Quindar Proxy</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+
+	    <!-- AngularJS Material CSS -->
+	    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.7/angular-material.min.css">
+	    <link  rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	   	<link rel="stylesheet" href="/css/index.css">
+	    
+	    <!-- AngularJS Material Dependencies -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+
+	    <!-- AngularJS Material Javascript -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.7/angular-material.min.js"></script>
+
+	    <script src="/app.js"></script>
+	    <script src="/controllers/indexCtrl.js"></script>
+    </head>
+
+    <!--By default, the content frame is populated with the adminMongo gui.-->
+	<body ng-app="app">
+		<div layout-fill layout="vertical" ng-controller="IndexCtrl">
+		    <section flex layout="horizontal">
+		        <!--Left Sidenav-->
+		        <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="true">
+					<md-toolbar class="brand">
+					    <md-icon md-svg-icon="/media/icons/icon-quindar-white.svg"></md-icon>
+					</md-toolbar>
+					<md-content flex role="navigation" id="left">
+					    <md-list>
+					        <md-list-item ng-repeat="tab in tabs" id="list1" >
+		                        <md-icon class="md-icon" ng-click="changeSource(tab.source)" md-svg-icon="{{ tab.icon }}">
+		                    	</md-icon>
+		                    </md-list-item>
+					    </md-list>
+					</md-content>
+		        </md-sidenav>
+		        <!--End Left Sidenav-->
+
+		        <!--Main Content-->
+		        <md-content flex class="main">
+		            <iframe width="100%" height="100%" ng-src="{{ source }}"></iframe>
+		        </md-content>
+		        <!--End Main Content-->
+		    </section>
+		</div>
+	</body>
+</html>
