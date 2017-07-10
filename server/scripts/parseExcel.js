@@ -18,7 +18,7 @@ module.exports = function(req,res){
 		    } else {
 		    	var telemetryConfig = new Object();
 		    	for (i=0; i<result.length; i++) {
-					telemetryConfig[result[i].id] = result[i];
+					telemetryConfig[result[i].qid] = result[i];
 				}
 
 				Config.findOne({ 'source.ipaddress' : req.body.sourceip }, function(err, config) {
