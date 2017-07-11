@@ -48,49 +48,59 @@ module.exports = function(io, julian, async) {
 				//Format the datastream as per configuration, if present
 				function(configuration, callback) {
 					if(configuration){
-						var newTelementry = new Telemetry();			
+						var newTelemetry = new Telemetry();
+						newTelemetry['mission'] = parsedData['mission'];
+						newTelemetry['timestamp'] = julian.toDate(parsedData['timestamp']);
+						var telemetry = new Object();
 
 						for (var point in configuration.contents) {
+							//slice variable to have <platform>_<system>_<category>_<channel>
+							var nodes = point.split("_").slice(2);
+							var newPoint = nodes.join("_");
 
-							newTelementry[point].notes = configuration.contents[point].notes;
-							newTelementry[point].category = configuration.contents[point].category;
-							newTelementry[point].name = configuration.contents[point].name;
-							newTelementry[point].units = configuration.contents[point].units;
+							//create new object for each configuration data point
+							telemetry[newPoint] = new Object();
+							telemetry[newPoint].notes = configuration.contents[point].notes;
+							telemetry[newPoint].category = configuration.contents[point].category;
+							telemetry[newPoint].name = configuration.contents[point].name;
+							telemetry[newPoint].units = configuration.contents[point].units;
 
 							if(configuration.contents[point].datatype == "date"){
 								try {
 									parsedData[point] = julian.toDate(parsedData[point]);
-									newTelementry[point].alarm_low = julian.toDate(configuration.contents[point].alarm_low);
-									newTelementry[point].alarm_high = julian.toDate(configuration.contents[point].alarm_high);
-									newTelementry[point].warn_low = julian.toDate(configuration.contents[point].warn_low);
-									newTelementry[point].warn_high = julian.toDate(configuration.contents[point].warn_high);
+									telemetry[newPoint].alarm_low = julian.toDate(configuration.contents[point].alarm_low);
+									telemetry[newPoint].alarm_high = julian.toDate(configuration.contents[point].alarm_high);
+									telemetry[newPoint].warn_low = julian.toDate(configuration.contents[point].warn_low);
+									telemetry[newPoint].warn_high = julian.toDate(configuration.contents[point].warn_high);
 								} catch (e) {
 									console.log("Error converting julian date: " + e);
 								}
 
 							} else {
-								newTelementry[point].alarm_low = configuration.contents[point].alarm_low;
-								newTelementry[point].alarm_high = configuration.contents[point].alarm_high;
-								newTelementry[point].warn_low = configuration.contents[point].warn_low;
-								newTelementry[point].warn_high = configuration.contents[point].warn_high;
+								telemetry[newPoint].alarm_low = configuration.contents[point].alarm_low;
+								telemetry[newPoint].alarm_high = configuration.contents[point].alarm_high;
+								telemetry[newPoint].warn_low = configuration.contents[point].warn_low;
+								telemetry[newPoint].warn_high = configuration.contents[point].warn_high;
 							}
 
-							if(!configuration.contents[point].value) {
+							if(!configuration.contents[point].expression) {
 								//value mode, store the value in the data stream as it is
-								newTelementry[point].value = parsedData[point];
+								telemetry[newPoint].value = parsedData['data'][point];
 							} else {
 								//expression mode,  evaluate the expression and store it
 								try {
-									var code = math.compile(configuration.contents[point].value);
-									newTelementry[point].value = code.eval(parsedData);
+									var code = math.compile(configuration.contents[point].expression);
+									telemetry[newPoint].value = code.eval(parsedData['data']);
 								} catch (e) {
 									console.log("Error evaluating expressions using Mathjs: " + e)
 								}
 							}
 							
 						}
+
+						newTelemetry['telemetry'] = convert(telemetry);
 						
-						newTelementry.save(function(err) { 
+						newTelemetry.save(function(err) { 
 							if (err) {
 								return callback(err);
 							}
@@ -110,4 +120,27 @@ module.exports = function(io, julian, async) {
 		});
 
 	});
+}
+
+//Function to convert flat structure object to hierarchial structure
+function convert(obj) {
+    var result = {};
+    eachKeyValue(obj, function(namespace, value) {
+        var parts = namespace.split("_");
+        var last = parts.pop();
+        var node = result;
+        parts.forEach(function(key) {
+            node = node[key] = node[key] || {};
+        });
+        node[last] = value;
+    });
+    return result;
+}
+
+function eachKeyValue(obj, fun) {
+    for (var i in obj) {
+        if (obj.hasOwnProperty(i)) {
+            fun(i, obj[i]);
+        }
+    }
 }
