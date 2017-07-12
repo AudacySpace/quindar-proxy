@@ -34,6 +34,7 @@
 			            <tr>
 			                <th>Source Name</th>
 			                <th>IP Address</th>
+			                <th>Mission Name</th>
 			                <th>File</th>
 			                <th>Upload</th>
 			            </tr>
@@ -50,6 +51,10 @@
 			        			ng-pattern='/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/'>
 			        			<span ng-show="ctrl.upload_form.sourceip.$error.pattern">Not a valid IP Address!</span>
 			        			<span ng-show="ctrl.upload_form.sourceip.$error.required && !ctrl.upload_form.sourceip.$pristine">This field is required!</span>
+			        		</td>
+			        		<td>
+			        			<input type="text" name="mission" class="form-control" ng-model="ctrl.config.mission" required>
+			        			<span ng-show="ctrl.upload_form.mission.$error.required && !ctrl.upload_form.mission.$pristine">This field is required!</span>
 			        		</td>
 			        		<td>
 			        			<div class="input-group">
@@ -79,6 +84,7 @@
 			        <tr>
 			            <th>Source Name</th>
 		                <th>IP Address</th>
+		                <th>Mission Name</th>
 		                <th>File Name</th>
 		            </tr>
 		        </thead>
@@ -86,6 +92,7 @@
 			     	<tr ng-repeat="config in ctrl.configlist">
 			     	    <td>{{ config.source.name }}</td>
 			            <td>{{ config.source.ipaddress }}</td>
+			            <td>{{ config.mission }}</td>
 		                <td>{{ config.source.filename }}</td>
 			        </tr>
 			    </tbody>

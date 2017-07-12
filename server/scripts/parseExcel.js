@@ -30,6 +30,7 @@ module.exports = function(req,res){
                     	config.contents = telemetryConfig;
                     	config.source.name = req.body.sourcename;
                     	config.source.filename = req.file.originalname;
+                    	config.mission = req.body.mission;
 
                     	config.save(function(err) {
 		  					if (err) throw err;
@@ -42,6 +43,7 @@ module.exports = function(req,res){
 			  			newConfig.contents = telemetryConfig;
 			  			newConfig.source.ipaddress = req.body.sourceip;
 			  			newConfig.source.filename = req.file.originalname;
+			  			newConfig.mission = req.body.mission;
 
 			  			newConfig.save(function(err) {
 		  					if (err) throw err;
