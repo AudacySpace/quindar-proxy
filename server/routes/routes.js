@@ -40,7 +40,7 @@
     });
 
     app.get('/getConfig', function(req,res){
-        Config.find({}, 'source', function(err, config) {
+        Config.find({}, { source : 1, mission : 1 }, function(err, config) {
             if (err) {
                 console.log("Error finding configurations in DB: " + err);
                 throw err;
