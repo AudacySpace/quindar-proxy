@@ -21,7 +21,8 @@ sourceApp
             data: { 
                 file : file, 
                 sourcename : vm.config.sourcename, 
-                sourceip : vm.config.sourceip
+                sourceip : vm.config.sourceip,
+                mission : vm.config.mission
             } 
         }).then(function (resp) { 
             //validate success
