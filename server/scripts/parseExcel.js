@@ -18,7 +18,7 @@ module.exports = function(req,res){
 		    } else {
 		    	var telemetryConfig = new Object();
 		    	for (i=0; i<result.length; i++) {
-					telemetryConfig[result[i].id] = result[i];
+					telemetryConfig[result[i].qid] = result[i];
 				}
 
 				Config.findOne({ 'source.ipaddress' : req.body.sourceip }, function(err, config) {
@@ -30,6 +30,7 @@ module.exports = function(req,res){
                     	config.contents = telemetryConfig;
                     	config.source.name = req.body.sourcename;
                     	config.source.filename = req.file.originalname;
+                    	config.mission = req.body.mission;
 
                     	config.save(function(err) {
 		  					if (err) throw err;
@@ -42,6 +43,7 @@ module.exports = function(req,res){
 			  			newConfig.contents = telemetryConfig;
 			  			newConfig.source.ipaddress = req.body.sourceip;
 			  			newConfig.source.filename = req.file.originalname;
+			  			newConfig.mission = req.body.mission;
 
 			  			newConfig.save(function(err) {
 		  					if (err) throw err;
