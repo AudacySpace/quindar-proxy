@@ -14,6 +14,11 @@ app
             source: '/sources'
         },
         {
+            title: 'Image Upload',
+            icon: 'media/icons/icon-upload-image.svg',
+            source: '/imageuploads'
+        },
+        {
             title: 'Netdata',
             icon: 'media/icons/icon-server-status.svg',
             source: '/netdata'
