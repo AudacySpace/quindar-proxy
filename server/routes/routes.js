@@ -29,7 +29,7 @@
 
     var imagestorage = multer.diskStorage({ //multers disk storage settings
         destination: function (req, file, cb) {
-            cb(null, '/tmp/imagemaps/');
+            cb(null, '/tmp/uploads/');
         },
         filename: function (req, file, cb) {
             cb(null, file.originalname);
