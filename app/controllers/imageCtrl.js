@@ -8,36 +8,34 @@ sourceApp
     vm.submit = function(){ 
         // Call uploadimage if form is valid
         if(vm.imageupload_form.$valid) {
+            if(vm.uploads.image && vm.uploads.contents && vm.uploads.selectedName && vm.uploads.imagename && vm.uploads.contents.size !== 0){
+                var imagenamestatus = uniqueImageName(vm.uploads.imagename,vm.uploads.selectedName);
+                var imagefilestatus = uniqueImageFile(vm.uploads.image.name,vm.uploads.selectedName);
 
-            var imagenamestatus = uniqueImageName(vm.uploads.imagename,vm.uploads.selectedName);
-            var imagefilestatus = uniqueImageFile(vm.uploads.image.name,vm.uploads.selectedName);
-
-            if(imagenamestatus !== false && imagefilestatus !== false){
-
-                if(vm.uploads.image && vm.uploads.contents && vm.uploads.selectedName && vm.uploads.imagename && vm.uploads.contents.size !== 0){
+                if(imagenamestatus !== false && imagefilestatus !== false){
                     vm.uploadimage(); 
-                } else if(!vm.uploads.image){
-                    $window.alert('No image uploaded. Please upload a jpeg file.');
-                }else if(!vm.uploads.contents){
-                    $window.alert('No contents file uploaded. Please upload a json file for the image contents.');
-                }else if(!vm.uploads.selectedName){
-                    $window.alert('Please select the mission');
-                }else if(vm.uploads.contents.size === 0){
-                    $window.alert('Please upload a non empty file');
-                }
-
-            }else {
-                if(imagenamestatus === false){
-                    $window.alert('Image Name already exists.Please enter a unique name for the image!');
-                    vm.uploads.imagename = "";
-                }
-                if(imagefilestatus === false){
-                    if($window.confirm('This image already exists for the mission with a different Image name!Do you want to still add?')){
-                          vm.uploadimage(); 
-                    }else{
-                        vm.uploads.image = {};
+                }else {
+                    if(imagenamestatus === false){
+                        $window.alert('Image Name already exists.Please enter a unique name for the image!');
+                        vm.uploads.imagename = "";
+                    }
+                    if(imagefilestatus === false && imagenamestatus !== false){
+                        if($window.confirm('This image already exists for the mission with a different Image name!Do you want to still add?')){
+                            vm.uploadimage(); 
+                        }else{
+                            vm.uploads.image = {};
+                        }
                     }
                 }
+
+            }else if(!vm.uploads.selectedName){
+                $window.alert('Please select the mission');
+            }else if(!vm.uploads.image){
+                $window.alert('No image uploaded. Please upload a jpeg file.');
+            }else if(!vm.uploads.contents){
+                $window.alert('No contents file uploaded. Please upload a json file for the image contents.');
+            }else if(vm.uploads.contents.size === 0){
+                $window.alert('The file has no contents.Please upload a non empty file.');
             }
         }
     }
