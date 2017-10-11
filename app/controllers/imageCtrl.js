@@ -1,5 +1,6 @@
 sourceApp
-.controller('ImageCtrl', ['Upload','$window', 'configService','imageService','$scope', function (Upload, $window, configService, imageService, $scope) {
+.controller('ImageCtrl', ['Upload','$window', 'configService','imageService', 
+    function (Upload, $window, configService, imageService) {
     var vm = this;
 
     showMissions();
@@ -11,8 +12,7 @@ sourceApp
             if(vm.uploads.image && vm.uploads.contents && vm.uploads.selectedName && vm.uploads.imagename && vm.uploads.contents.size !== 0){
                 var imagenamestatus = uniqueImageName(vm.uploads.imagename,vm.uploads.selectedName);
                 var imagefilestatus = uniqueImageFile(vm.uploads.image.name,vm.uploads.selectedName);
-
-                if(imagenamestatus !== false && imagefilestatus !== false){
+                if(imagenamestatus && imagefilestatus){
                     vm.uploadimage(); 
                 }else {
                     if(imagenamestatus === false){
@@ -98,6 +98,7 @@ sourceApp
                 return false;
             }
         }
+        return true;
     }
 
     function uniqueImageFile(filename,mission){
@@ -106,6 +107,7 @@ sourceApp
                 return false;
             }
         }
+        return true;
     }
 
     vm.removeImage = function(iname,mission){
