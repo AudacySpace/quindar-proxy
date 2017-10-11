@@ -55,7 +55,7 @@ describe('Testing imageService', function () {
             .respond(200, {error_code: 0, err_desc : null});
 
         imageService.removeImageMap(imageid, mission).then( function(response){
-            expect(response.status).toBe(200);
+            expect(response.status).toBe(400);
             expect(response.data.error_code).toBe(0);
         });
 
