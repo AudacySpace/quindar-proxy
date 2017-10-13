@@ -19,7 +19,7 @@ sourceApp
                         $window.alert('Image Name already exists.Please enter a unique name for the image!');
                         vm.uploads.imagename = "";
                     }
-                    if(imagefilestatus === false && imagenamestatus !== false){
+                    if(imagefilestatus === false && imagenamestatus === true){
                         if($window.confirm('This image already exists for the mission with a different Image name!Do you want to still add?')){
                             vm.uploadimage(); 
                         }else{
@@ -40,7 +40,7 @@ sourceApp
         }
     }
 
-    vm.uploadimage = function(image,contents) {
+    vm.uploadimage = function() {
         Upload.upload({
             url: '/saveImages', 
             data: { 
@@ -113,18 +113,16 @@ sourceApp
     vm.removeImage = function(iname,mission){
         if($window.confirm('Are you sure you want to delete this image?')){
             removeImageMap(iname,mission);
-        }else {
-
         }
     }
 
     function removeImageMap(iname,mission){
         imageService.removeImageMap(iname,mission)
-            .then(function(response) {
-                 if(response.data.error_code === 0){
-                     $window.alert('Image map: ' + response.config.data.imageid +' for mission ' + response.config.data.mission +' is deleted.');
-                     showList();
-                 }
+        .then(function(response) {
+            if(response.data.error_code === 0){
+                $window.alert('Image map: ' + response.config.data.imageid +' for mission ' + response.config.data.mission +' is deleted.');
+                showList();
+            }
         });
     }
 

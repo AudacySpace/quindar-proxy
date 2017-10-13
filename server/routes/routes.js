@@ -44,20 +44,15 @@
                     console.log('Wrong format!');
                     return callback(null, false, new Error('Wrong format!'));
                 }
-            }else {
-                if (file.mimetype !== 'application/octet-stream') {
-                    console.log('Wrong format!');
-                    return callback(null, false, new Error('Wrong format!'));
-                }
             }
             callback(null, true);
 
         }
     }).fields([{
-           name: 'image', maxCount: 1
-         }, {
-           name: 'contents', maxCount: 1
-         }]);
+        name: 'image', maxCount: 1
+    }, {
+        name: 'contents', maxCount: 1
+    }]);
 
 
     app.get('/',function(req,res){
@@ -111,8 +106,6 @@
                 }
             }
            res.send(imagelist); 
-
-
         });
     });
 
