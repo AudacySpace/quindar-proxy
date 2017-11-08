@@ -35,27 +35,31 @@ module.exports = function(io, julian, async) {
 	                console.log(err);
 	            }
 
-	            if(commands.length>0) {
-					for(var i=0; i<commands.length; i++){
-						newcommand.name = commands[i].name;
-						newcommand.argument = commands[i].argument;
-						newcommand.timestamp = julian(commands[i].timestamp);
+	            if(commands) {
+		            if(commands.length>0) {
+						for(var i=0; i<commands.length; i++){
+							newcommand.name = commands[i].name;
+							newcommand.argument = commands[i].argument;
+							newcommand.timestamp = julian(commands[i].timestamp);
 
-						var room = clients[commands[i].mission]["socket"];
-						if(room) {
-							io.to(room).emit("command", newcommand);
-							commands[i].sent_to_satellite = true;
+							if(clients[commands[i].mission]) {
+								var room = clients[commands[i].mission]["socket"];
+								if(room) {
+									io.to(room).emit("command", newcommand);
+									commands[i].sent_to_satellite = true;
 
-							commands[i].save(function(err,result){
-								if(err){
-									console.log(err);
+									commands[i].save(function(err,result){
+										if(err){
+											console.log(err);
+										}
+
+										console.log("Flag updated for sent command");
+									})
 								}
-
-								console.log("Flag updated for sent command");
-							})
-						}
+							}
+			            }
 		            }
-	            }
+		        }
 	        });
 		}, 1000);
 
@@ -116,7 +120,9 @@ module.exports = function(io, julian, async) {
 
 							if(configuration.contents[point].datatype == "date"){
 								try {
-									parsedData[point] = julian.toDate(parsedData[point]);
+									if(parsedData['data'][point] != ""){
+										parsedData['data'][point] = julian.toDate(parsedData['data'][point]);
+									}
 									telemetry[newPoint].alarm_low = julian.toDate(configuration.contents[point].alarm_low);
 									telemetry[newPoint].alarm_high = julian.toDate(configuration.contents[point].alarm_high);
 									telemetry[newPoint].warn_low = julian.toDate(configuration.contents[point].warn_low);
