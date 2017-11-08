@@ -5,7 +5,6 @@
     var XLSX = require("xlsx");
     var jsonfile = require('jsonfile');
     var parse = require('../scripts/parseExcel.js');
-    var convertWB = require('../scripts/parseWorkbook.js');
     var Config = require('../model/configuration');
     var Imagemap = require('../model/imagemap');
     var Timeline = require('../model/timeline');
