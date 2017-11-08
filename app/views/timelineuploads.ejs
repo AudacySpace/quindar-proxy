@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <meta name="description" content="">
+	    <meta name="author" content="qsvr.quindar.space">
+	    <title>Quindar Proxy</title>
+
+	    <!-- Bootstrap Core CSS -->
+	    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+	    <!-- Custom CSS -->
+	    <link href="/css/quindar-proxy.css" rel="stylesheet">
+
+	    <!-- Angular Scripts and file upload dependencies -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+		<script type="text/javascript" src="/scripts/ng-file-upload.min.js"></script>
+	    <script type="text/javascript" src="/scripts/ng-file-upload-shim.min.js"></script>
+
+	    <!-- Angular module -->
+		<script src="/app.js"></script>
+		<script src="/controllers/timelineCtrl.js"></script>
+		<script src="/services/configService.js"></script>
+		<script src="/services/timelineService.js"></script>
+
+	</head>
+	<body ng-app="sourceApp" ng-controller="TimelineCtrl as ctrl">
+		<div class="container form">
+			<center><h2>Timeline Data</h2></center>
+	    	<form name="ctrl.timelinedataupload_form" enctype="multipart/form-data">
+	    		<table class="table table-hover">
+	    			<thead>
+			            <tr>
+			                <th>File Name</th>
+			                <th>Mission</th>
+			                <th>Upload</th>
+			            </tr>
+			        </thead>
+			        <tbody class="details">
+			        	<tr>
+			        		<td>
+			        			<input type="text" name="filename" ng-pattern="/^[a-zA-Z0-9]*$/" class="form-control" ng-model="ctrl.uploads.filename" required>
+			        			<span ng-show="ctrl.timelinedataupload_form.filename.$invalid && !ctrl.timelinedataupload_form.filename.$pristine && !ctrl.timelinedataupload_form.filename.$error.required">No special characters!</span>
+			        			<span ng-show="ctrl.timelinedataupload_form.filename.$error.required && !ctrl.timelinedataupload_form.filename.$pristine">This field is required!</span>
+			        		</td>
+			        		<td>
+								<select ng-model="ctrl.uploads.missionName" ng-options="x for x in ctrl.missionNames" class="form-control">
+								</select>
+			        			<span ng-show="ctrl.timelinedataupload_form.missionName.$error.required && !ctrl.timelinedataupload_form.missionName.$pristine">This field is required!</span>
+			        		<td>
+			        			<div class="input-group">
+			        				<label class="input-group-btn">
+			        					<span class="btn btn-primary">
+			        						Browse 
+			        						<input type="file" id="file" ngf-select ng-model="ctrl.uploads.file" name="file" 
+			        						ngf-pattern="'.xlsx'" accept=".xlsx" ngf-max-size="1MB" style="display: none;">
+			                    		</span>
+		               				</label>
+		                			<input type="text" class="form-control" value="{{ ctrl.uploads.file.name }}" readonly>
+		            			</div>
+		            			<span ng-show="ctrl.timelinedataupload_form.file.$error.pattern">Not a valid xlsx file!</span>
+		            		</td>
+		            		<td>
+			                   	<input type="submit" ng-click="ctrl.submit()" class="btn btn-primary upload" value="Upload">
+			                </td>
+			            </tr>
+			        </tbody>
+		    	</table>
+		  	</form>
+		</div>
+
+		<div class="container list">
+			<table class="table table-hover">
+	    		<thead>
+			        <tr>
+		                <th>File Name</th>
+		                <th>Mission</th>
+		                <th>File</th>
+		            </tr>
+		        </thead>
+		        <tbody class="details">
+			     	<tr ng-repeat="timeline in ctrl.timelinelist">
+			            <td>{{ timeline.filename }}</td>
+		                <td>{{ timeline.mission }}</td>
+		                <td>{{ timeline.file }}</td>
+			        </tr>
+			    </tbody>
+		    </table>
+		</div>
+
+		<!-- jQuery -->
+	    <script src="/scripts/jquery.js"></script>
+
+	    <!-- Bootstrap Core JavaScript -->
+	    <script src="/scripts/bootstrap.min.js"></script>
+
+	</body>
+</html>

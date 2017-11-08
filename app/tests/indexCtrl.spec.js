@@ -24,9 +24,9 @@ describe('Testing index controller', function () {
         expect(scope.source).toEqual('/adminMongo');
     })
 
-    it('should define the number of tabs (5) on the web page', function(){
+    it('should define the number of tabs (6) on the web page', function(){
         expect(scope.tabs).toBeDefined();
-        expect(scope.tabs.length).toEqual(5);
+        expect(scope.tabs.length).toEqual(6);
     })
 
     it('should define the function changeSource()', function(){
