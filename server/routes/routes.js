@@ -356,4 +356,19 @@
            res.send(timelinelist); 
         });
     });
+
+    //remove timeline from timelines collection
+    app.post('/removeTimeline', function(req,res){
+        var filename = req.body.filename;
+        var mission = req.body.mission;
+
+        Timeline.findOne({'mission':mission}, function(err, timeline) {
+            if (err) {
+                console.log("Error finding timeline: " + err);
+                throw err;
+            }
+            timeline.remove();
+        });
+        res.json({error_code:0,err_desc:null});
+    });
 }

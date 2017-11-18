@@ -78,6 +78,7 @@
 		                <th>File Name</th>
 		                <th>Mission</th>
 		                <th>File</th>
+		                <th></th>
 		            </tr>
 		        </thead>
 		        <tbody class="details">
@@ -85,6 +86,7 @@
 			            <td>{{ timeline.filename }}</td>
 		                <td>{{ timeline.mission }}</td>
 		                <td>{{ timeline.file }}</td>
+		                <td class="itemclose" ng-click="ctrl.removeTimeline(timeline.filename,timeline.mission)">&times;</td>
 			        </tr>
 			    </tbody>
 		    </table>

@@ -48,6 +48,18 @@ sourceApp
         });
     };
 
+    vm.removeTimeline = function(filename, mission){
+        if($window.confirm('Are you sure you want to delete this file?')){
+            timelineService.removeTimeline(filename, mission)
+            .then(function(response) {
+                if(response.status == 200) {
+                    $window.alert('Timeline File: ' + response.config.data.filename +' for mission ' + response.config.data.mission +' is deleted.');
+                    showList();
+                }
+            })
+        }
+    }
+
     function showMissions(){
         configService.getConfig()
         .then(function(response) {

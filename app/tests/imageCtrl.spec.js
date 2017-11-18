@@ -384,11 +384,13 @@ describe('Testing images controller', function () {
 
         spyOn(windowMock, 'confirm').and.returnValue(true);
 
-        deferredRemoval.resolve({ data : {error_code : 0} });
+        deferredRemoval.resolve({ data : {error_code : 0}, 
+            config : { data : { mission : "AZero", imageid : "SYS" }} });
+        controller.removeImage("SYS", "AZero");
         // call digest cycle for this to work
         scope.$digest();
 
-        controller.removeImage("SYS", "AZero");
         expect(imageService.removeImageMap).toHaveBeenCalledWith("SYS", "AZero");
+        expect(windowMock.alert).toHaveBeenCalledWith('Image map: SYS for mission AZero is deleted.');
     })
 });
