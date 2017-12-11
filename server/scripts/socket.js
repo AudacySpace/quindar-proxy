@@ -18,7 +18,7 @@ module.exports = function(io, julian, async) {
 			clients[data.mission] = {
 				"socket" : socket.id
 			}
-		})
+		});
 
 		socket.on('disconnect', function(){
 			for(var client in clients){
@@ -26,7 +26,7 @@ module.exports = function(io, julian, async) {
 					delete clients[client];
 		        }
 		    }
-		})
+		});
 
 		//poll database for new commands and send them to satellite/simulator
 		setInterval(function() {
@@ -38,9 +38,10 @@ module.exports = function(io, julian, async) {
 	            if(commands) {
 		            if(commands.length>0) {
 						for(var i=0; i<commands.length; i++){
-							newcommand.name = commands[i].name;
-							newcommand.argument = commands[i].argument;
-							newcommand.timestamp = julian(commands[i].timestamp);
+							newcommand.name = commands[i].name.toLowerCase();
+							newcommand.argument = commands[i].argument.toLowerCase();
+							newcommand.type = commands[i].type.toLowerCase();
+							newcommand.timestamp = commands[i].timestamp;
 
 							if(clients[commands[i].mission]) {
 								var room = clients[commands[i].mission]["socket"];
@@ -62,6 +63,26 @@ module.exports = function(io, julian, async) {
 		        }
 	        });
 		}, 1000);
+
+		socket.on('comm-ack', function(data){
+			Command.findOne( {'timestamp': data.timestamp}, function(err, command) {
+	            if(err){
+	                console.log(err);
+	            }
+
+	            if(command) {
+					command.response = data.response;
+
+					command.save(function(err,result){
+						if(err){
+							console.log(err);
+						}
+
+						console.log("Response added for the command");
+					})
+				}
+			})
+		});
 
 		socket.on('satData1', function(data){
 			source = socket.handshake.headers['x-real-ip'];
