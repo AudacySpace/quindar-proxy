@@ -16,7 +16,7 @@
     "fs": "0.0.1-security",
     "jsonfile": "^4.0.0",
     "julian": "0.1.0",
-    "mathjs": "3.8.1",
+    "mathjs": "~3.17.0",
     "mongoose": "^4.4.12",
     "multer": "1.2.1",
     "socket.io": "^1.6.0",
