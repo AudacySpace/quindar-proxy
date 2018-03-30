@@ -124,6 +124,7 @@ module.exports = function(io, julian, async) {
 					if(configuration){
 						var newTelemetry = new Telemetry();
 						newTelemetry['mission'] = parsedData['mission'];
+						newTelemetry['source'] = configuration.source.name;
 						newTelemetry['timestamp'] = julian.toDate(parsedData['timestamp']);
 						var telemetry = new Object();
 
