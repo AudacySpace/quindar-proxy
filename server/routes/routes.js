@@ -5,6 +5,7 @@
     var XLSX = require("xlsx");
     var jsonfile = require('jsonfile');
     var parse = require('../scripts/parseExcel.js');
+    var parseCommands = require('../scripts/parseCommands.js');
     var Config = require('../model/configuration');
     var Imagemap = require('../model/imagemap');
     var Timeline = require('../model/timeline');
@@ -143,6 +144,7 @@
             }
 
             parse(req,res);
+            parseCommands(req,res);
             res.json({error_code:0,err_desc:null});
         });
     });
