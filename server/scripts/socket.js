@@ -120,54 +120,52 @@ module.exports = function(io, julian, async) {
 				},
 
 				//Format the datastream as per configuration, if present
+				//Assuming all the raw values are hexadecimal and the timestamp
+				//values are unix epoch timestamp in seconds
 				function(configuration, callback) {
 					if(configuration){
 						var newTelemetry = new Telemetry();
 						newTelemetry['mission'] = parsedData['mission'];
 						newTelemetry['source'] = configuration.source.name;
-						newTelemetry['timestamp'] = julian.toDate(parsedData['timestamp']);
+						newTelemetry['timestamp'] = new Date(parsedData['timestamp'] * 1000);
 						var telemetry = new Object();
 
-						for (var point in configuration.contents) {
-							//slice variable to have <platform>_<system>_<category>_<channel>
-							var nodes = point.split("_").slice(2);
-							var newPoint = nodes.join("_");
+						for (var point in parsedData['data']) {
 
 							//create new object for each configuration data point
-							telemetry[newPoint] = new Object();
-							telemetry[newPoint].notes = configuration.contents[point].notes;
-							telemetry[newPoint].category = configuration.contents[point].category;
-							telemetry[newPoint].name = configuration.contents[point].name;
-							telemetry[newPoint].units = configuration.contents[point].units;
+							telemetry[point] = new Object();
+							telemetry[point].notes = configuration.contents[point].description;
+							telemetry[point].units = configuration.contents[point].units;
+							telemetry[point].rawValue = parsedData['data'][point];
 
-							if(configuration.contents[point].datatype == "date"){
+							//convert parsedData['data'][point] from hex to decimal
+							parsedData['data'][point] = hexToDec(parsedData['data'][point], configuration.contents[point].datatype);
+
+							if(configuration.contents[point].datatype == "timestamp"){
 								try {
-									if(parsedData['data'][point] != ""){
-										parsedData['data'][point] = julian.toDate(parsedData['data'][point]);
-									}
-									telemetry[newPoint].alarm_low = julian.toDate(configuration.contents[point].alarm_low);
-									telemetry[newPoint].alarm_high = julian.toDate(configuration.contents[point].alarm_high);
-									telemetry[newPoint].warn_low = julian.toDate(configuration.contents[point].warn_low);
-									telemetry[newPoint].warn_high = julian.toDate(configuration.contents[point].warn_high);
+									parsedData['data'][point] = unix2Date(parsedData['data'][point]);
+									telemetry[point].alarm_low = unix2Date(configuration.contents[point].alarm_low);
+									telemetry[point].alarm_high = unix2Date(configuration.contents[point].alarm_high);
+									telemetry[point].warn_low = unix2Date(configuration.contents[point].warn_low);
+									telemetry[point].warn_high = unix2Date(configuration.contents[point].warn_high);
 								} catch (e) {
-									console.log("Error converting julian date: " + e);
+									console.log("Error converting unix date: " + e);
 								}
-
 							} else {
-								telemetry[newPoint].alarm_low = configuration.contents[point].alarm_low;
-								telemetry[newPoint].alarm_high = configuration.contents[point].alarm_high;
-								telemetry[newPoint].warn_low = configuration.contents[point].warn_low;
-								telemetry[newPoint].warn_high = configuration.contents[point].warn_high;
+								telemetry[point].alarm_low = configuration.contents[point].alarm_low;
+								telemetry[point].alarm_high = configuration.contents[point].alarm_high;
+								telemetry[point].warn_low = configuration.contents[point].warn_low;
+								telemetry[point].warn_high = configuration.contents[point].warn_high;
 							}
 
 							if(!configuration.contents[point].expression) {
 								//value mode, store the value in the data stream as it is
-								telemetry[newPoint].value = parsedData['data'][point];
+								telemetry[point].value = parsedData['data'][point];
 							} else {
 								//expression mode,  evaluate the expression and store it
 								try {
 									var code = math.compile(configuration.contents[point].expression);
-									telemetry[newPoint].value = code.eval(parsedData['data']);
+									telemetry[point].value = code.eval(parsedData['data']);
 								} catch (e) {
 									console.log("Error evaluating expressions using Mathjs: " + e)
 								}
@@ -220,4 +218,21 @@ function eachKeyValue(obj, fun) {
             fun(i, obj[i]);
         }
     }
+}
+
+function hexToDec(a, type) {
+	a = parseInt(a, 16);
+	if(type == "signedNumber"){
+		if ((a & 0x8000) > 0) {
+		   a = a - 0x10000;
+		}
+	}
+	return a;
+}
+
+function unix2Date(value) {
+	if(value != ""){
+		value = new Date (value * 1000);
+	}
+	return value;
 }
