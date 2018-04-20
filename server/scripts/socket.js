@@ -84,7 +84,7 @@ module.exports = function(io, julian, async) {
 			})
 		});
 
-		socket.on('satData1', function(data){
+		socket.on('satData', function(data){
 			source = socket.handshake.headers['x-real-ip'];
 
 			try {
@@ -131,15 +131,18 @@ module.exports = function(io, julian, async) {
 						var telemetry = new Object();
 
 						for (var point in parsedData['data']) {
-
 							//create new object for each configuration data point
 							telemetry[point] = new Object();
-							telemetry[point].notes = configuration.contents[point].description;
-							telemetry[point].units = configuration.contents[point].units;
 							telemetry[point].rawValue = parsedData['data'][point];
 
 							//convert parsedData['data'][point] from hex to decimal
 							parsedData['data'][point] = hexToDec(parsedData['data'][point], configuration.contents[point].datatype);
+							//parsedData['data'][point] = parsedData['data'][point];
+						}
+
+						for (var point in parsedData['data']) {
+							telemetry[point].notes = configuration.contents[point].description;
+							telemetry[point].units = configuration.contents[point].units;
 
 							if(configuration.contents[point].datatype == "timestamp"){
 								try {
@@ -220,9 +223,10 @@ function eachKeyValue(obj, fun) {
     }
 }
 
+//convert hexadecimal values to decimal(signed or unsigned)
 function hexToDec(a, type) {
 	a = parseInt(a, 16);
-	if(type == "signedNumber"){
+	if(type == "signed"){
 		if ((a & 0x8000) > 0) {
 		   a = a - 0x10000;
 		}
@@ -230,6 +234,7 @@ function hexToDec(a, type) {
 	return a;
 }
 
+//convert unix timestamp to javascript date
 function unix2Date(value) {
 	if(value != ""){
 		value = new Date (value * 1000);
