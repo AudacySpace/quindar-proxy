@@ -136,7 +136,7 @@ module.exports = function(io, julian, async) {
 							telemetry[point].rawValue = parsedData['data'][point];
 
 							//convert parsedData['data'][point] from hex to decimal
-							parsedData['data'][point] = hexToDec(parsedData['data'][point], configuration.contents[point].datatype);
+							parsedData['data'][point] = convertHex(parsedData['data'][point], configuration.contents[point].datatype, configuration.contents[point].bits);
 							//parsedData['data'][point] = parsedData['data'][point];
 						}
 
@@ -224,11 +224,21 @@ function eachKeyValue(obj, fun) {
 }
 
 //convert hexadecimal values to decimal(signed or unsigned)
-function hexToDec(a, type) {
-	a = parseInt(a, 16);
-	if(type == "signed"){
-		if ((a & 0x8000) > 0) {
-		   a = a - 0x10000;
+function convertHex(a, type, bit) {
+	if(type == "raw"){
+		return a;
+	} else {
+		if(type == "signed"){
+			a = signedHexToDec(a, bit);
+		} else if(type == "binary"){
+			//convert to binary
+			a = hexToBin(a);
+		} else if(type == "float"){
+			//convert to float
+			a = hexToFloat(a);
+		} else {
+			//unsigned and timestamp datatypes
+			a = parseInt(a, 16);
 		}
 	}
 	return a;
@@ -241,3 +251,42 @@ function unix2Date(value) {
 	}
 	return value;
 }
+
+//convert hexadecimal intergers to decimal
+function signedHexToDec(str, bit){
+	a = parseInt(str, 16);
+	if(bit == 16) {
+		if ((a & 0x8000) > 0) {
+			a = a - 0x10000;
+		}
+	} else if(bit == 32) {
+		if ((a & 0x80000000) < 0) {
+			a = a - 0x100000000;
+		}
+	}
+	return a;
+}
+
+//convert IEEE754 hex value to float
+function hexToFloat(str) {
+	var float = 0, sign, mantissa, exp,
+		int = 0;
+  	int = parseInt(str,16);
+  	sign = (int>>>31)?-1:1;
+  	exp = (int >>> 23 & 0xff) - 127;
+  	mantissa = ((int & 0x7fffff) + 0x800000).toString(2);
+
+  	for (i=0; i<mantissa.length; i+=1){
+    	float += parseInt(mantissa[i])? Math.pow(2,exp):0;
+    	exp--;
+  	}
+	return float*sign;
+}
+
+//convert hexadecimal values to binary
+function hexToBin(a) {
+	a = parseInt(str, 16);
+	a = a.toString(2);
+	return a;
+}
+
