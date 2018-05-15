@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 // define the schema for our telemetry model
 var telemetrySchema = mongoose.Schema({
     mission : String,
+    source : String,
     timestamp : Date,
     telemetry : Object
 }, { collection: 'telemetry' });

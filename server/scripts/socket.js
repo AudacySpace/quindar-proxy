@@ -3,12 +3,86 @@ module.exports = function(io, julian, async) {
 	var math = require('mathjs');
 	var Config = require('../model/configuration');
 	var Telemetry = require('../model/telemetry');
+	var Command = require('../model/command');
 	var source = "";
 	var configuration = new Config();
+	var newcommand = {};
+	var clients = {};
 
 	//Listen to the GMAT server streaming data
 	io.on('connection', function(socket){
 		console.log('socket.io server connected.');
+
+		//add clients socket id using mission name
+		socket.on('add-mission', function(data){
+			clients[data.mission] = {
+				"socket" : socket.id
+			}
+		});
+
+		socket.on('disconnect', function(){
+			for(var client in clients){
+		        if(clients[client]["socket"] == socket.id){
+					delete clients[client];
+		        }
+		    }
+		});
+
+		//poll database for new commands and send them to satellite/simulator
+		setInterval(function() {
+			Command.find( {'sent_to_satellite': false}, function(err, commands) {
+	            if(err){
+	                console.log(err);
+	            }
+
+	            if(commands) {
+		            if(commands.length>0) {
+						for(var i=0; i<commands.length; i++){
+							newcommand.name = commands[i].name.toLowerCase();
+							newcommand.argument = commands[i].argument.toLowerCase();
+							newcommand.type = commands[i].type.toLowerCase();
+							newcommand.timestamp = commands[i].timestamp;
+
+							if(clients[commands[i].mission]) {
+								var room = clients[commands[i].mission]["socket"];
+								if(room) {
+									io.to(room).emit("command", newcommand);
+									commands[i].sent_to_satellite = true;
+
+									commands[i].save(function(err,result){
+										if(err){
+											console.log(err);
+										}
+
+										console.log("Flag updated for sent command");
+									})
+								}
+							}
+			            }
+		            }
+		        }
+	        });
+		}, 1000);
+
+		socket.on('comm-ack', function(data){
+			Command.findOne( {'timestamp': data.timestamp}, function(err, command) {
+	            if(err){
+	                console.log(err);
+	            }
+
+	            if(command) {
+					command.response = data.response;
+
+					command.save(function(err,result){
+						if(err){
+							console.log(err);
+						}
+
+						console.log("Response added for the command");
+					})
+				}
+			})
+		});
 
 		socket.on('satData1', function(data){
 			source = socket.handshake.headers['x-real-ip'];
@@ -50,6 +124,7 @@ module.exports = function(io, julian, async) {
 					if(configuration){
 						var newTelemetry = new Telemetry();
 						newTelemetry['mission'] = parsedData['mission'];
+						newTelemetry['source'] = configuration.source.name;
 						newTelemetry['timestamp'] = julian.toDate(parsedData['timestamp']);
 						var telemetry = new Object();
 
@@ -67,7 +142,9 @@ module.exports = function(io, julian, async) {
 
 							if(configuration.contents[point].datatype == "date"){
 								try {
-									parsedData[point] = julian.toDate(parsedData[point]);
+									if(parsedData['data'][point] != ""){
+										parsedData['data'][point] = julian.toDate(parsedData['data'][point]);
+									}
 									telemetry[newPoint].alarm_low = julian.toDate(configuration.contents[point].alarm_low);
 									telemetry[newPoint].alarm_high = julian.toDate(configuration.contents[point].alarm_high);
 									telemetry[newPoint].warn_low = julian.toDate(configuration.contents[point].warn_low);
