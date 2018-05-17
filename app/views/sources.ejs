@@ -13,11 +13,16 @@
 
 	    <!-- Custom CSS -->
 	    <link href="/css/quindar-proxy.css" rel="stylesheet">
+	    <link href="/css/modalStyles.css" rel="stylesheet">
 
 	    <!-- Angular Scripts and file upload dependencies -->
 	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
 		<script type="text/javascript" src="/scripts/ng-file-upload.min.js"></script>
 	    <script type="text/javascript" src="/scripts/ng-file-upload-shim.min.js"></script>
+	    <script src="/scripts/ui-bootstrap-tpls.js"></script>
+
+	    <!-- AngularJS Material Dependencies -->
+    	<script src="/scripts/angular-animate.min.js"></script>
 
 	    <!-- Angular module -->
 		<script src="/app.js"></script>
@@ -86,6 +91,7 @@
 		                <th>IP Address</th>
 		                <th>Mission Name</th>
 		                <th>File Name</th>
+		                <th>Attachments</th>
 		            </tr>
 		        </thead>
 		        <tbody class="details">
@@ -94,6 +100,10 @@
 			            <td>{{ config.source.ipaddress }}</td>
 			            <td>{{ config.mission }}</td>
 		                <td>{{ config.source.filename }}</td>
+		                <td><a ng-click="ctrl.showModal(config.mission)">
+		                		<img style="height:3%" ng-src="../../public/media/icons/attachment-vertical-paperclip.svg"/>
+		                	</a>
+		                </td>
 			        </tr>
 			    </tbody>
 		    </table>
