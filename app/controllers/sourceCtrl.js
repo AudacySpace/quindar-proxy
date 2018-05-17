@@ -1,5 +1,5 @@
 sourceApp
-.controller('SourceCtrl', ['Upload','$window', 'configService', function (Upload, $window, configService) {
+.controller('SourceCtrl', ['Upload','$window', 'configService','$uibModal', function (Upload, $window, configService, $uibModal) {
     var vm = this;
 
     showConfig();
@@ -47,4 +47,76 @@ sourceApp
             vm.configlist = response.data;
         });
     }
+
+    vm.showModal = function(missionName) {
+        // Just provide a template url, a controller and call 'open'.
+        $uibModal.open({
+            templateUrl: "./views/uploadAttachments.html",
+            controller: 'aggFileUploadController',
+            controllerAs: '$ctrl',
+            resolve: {
+                mission: function () {
+                    return missionName;
+                }
+            }
+        }).result.then(function(response){
+            //handle modal close with response
+        },
+        function () {
+            //handle modal dismiss
+        });
+    };
+}]);
+
+sourceApp.controller('aggFileUploadController', ['$scope','$uibModalInstance','mission','Upload','$window', function($scope,$uibModalInstance,mission,Upload,$window) {
+
+    var $ctrl = this;
+    $ctrl.missionName = mission;
+    $ctrl.formDetails = {
+        file : "",
+        id: ""
+    }
+
+    $ctrl.list = [
+        {
+            id:100,
+            filename:'AggFile1.csv'
+        },
+        {
+            id:101,
+            filename:'AggFile2.csv'
+        }
+    ]
+
+    $ctrl.close = function() {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    $ctrl.submit = function(){ 
+        // Call upload if form is valid
+        if($ctrl.uploadAggFile_form.$valid) {
+            if($ctrl.formDetails.file){
+                $ctrl.upload($ctrl.formDetails.file); 
+            } else {
+                $window.alert('No file passed. Please upload a csv file.');
+            }
+        }
+    }
+
+    $ctrl.upload = function(file) {
+        Upload.upload({
+            url: '/uploadCsv', 
+            data: { 
+                file : file, 
+                id : $ctrl.formDetails.id, 
+                mission : $ctrl.missionName
+            } 
+        }).then(function (resp) { 
+            //validate success
+
+        }, function (resp) { //catch error
+            
+        });
+    };
+
 }]);
