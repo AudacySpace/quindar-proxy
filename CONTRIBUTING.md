@@ -61,7 +61,7 @@ Follow steps to build and deploy the container on localhost. Shared Drives featu
     docker build -t "quindar-qsvr" .
     cd ../../quindar-proxy
     npm install
-    docker run -d -t --name qsvr --cap-add SYS_PTRACE -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v $(pwd):/node/ -p 80:80 -p 443:443 -p 27017:27017 quindar-qsvr
+    docker run -d -t --name qsvr --cap-add SYS_PTRACE -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v $(pwd):/node/proxy/ -p 80:80 -p 443:443 -p 27017:27017 quindar-qsvr
 
 The UI should be up and running on: http://localhost. Click on Login to get started. Use **mongodb://admin@localhost** as connection string to use the local Mongo database.
 
