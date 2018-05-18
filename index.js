@@ -47,3 +47,6 @@ require('./server/routes/routes.js')(app);
 
 // script to read socket stream ================================================
 require('./server/scripts/socket.js')(io, julian, async);
+
+// script to read A0 Gateway Proxy =============================================
+require('./server/scripts/zero.js')(io, async);

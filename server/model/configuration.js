@@ -8,7 +8,8 @@ var configSchema = mongoose.Schema({
     	filename :  String
     },
     contents : Object,
-    mission : String
+    mission : String, 
+    attachments : Array
 });
 
 // create the model for users and expose it to our app
