@@ -190,7 +190,7 @@ describe('Testing aggregator file upload controller', function () {
         expect(controller.formDetails).toEqual({});
     });
 
-    it('should alert the user when file is selected on upload', function(){
+    it('should alert the user when no file is selected on upload', function(){
         controller.uploadAggFile_form = {
             $valid: true,
             $setPristine : function(){}
