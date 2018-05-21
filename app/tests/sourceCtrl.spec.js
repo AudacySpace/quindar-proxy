@@ -7,6 +7,8 @@ describe('Testing source controller', function () {
         }
     };
 
+    var modalInstance = { open: function() {} };
+
     beforeEach(function () {
         // load the module
         module('sourceApp', function ($provide) {
@@ -26,7 +28,8 @@ describe('Testing source controller', function () {
 
             controller = $controller('SourceCtrl', {
                 $scope: scope,
-                configService: configService
+                configService: configService,
+                $uibModal : modalInstance
             });
         });
     });
@@ -37,11 +40,11 @@ describe('Testing source controller', function () {
 
     it('should define the function submit()', function(){
         expect(controller.submit).toBeDefined();
-    })
+    });
 
     it('should define the function upload()', function(){
         expect(controller.upload).toBeDefined();
-    })
+    });
 
     it('should call the service to get configuration list', function() {
         var result = [{
@@ -85,7 +88,7 @@ describe('Testing source controller', function () {
         controller.submit();
         expect(controller.upload).toHaveBeenCalled();
         expect(controller.upload).toHaveBeenCalledWith(args);
-    })
+    });
 
     it('should alert the user when upload form is valid but the file property does not exist', function(){
         controller.upload_form = {
@@ -100,7 +103,7 @@ describe('Testing source controller', function () {
 
         controller.submit();
         expect(windowMock.alert).toHaveBeenCalledWith('No file passed. Please upload an xlsx file.');
-    })
+    });
 
     it('should upload file when upload() is called and successfully alert the user', function(){
         controller.upload_form = {
@@ -139,7 +142,7 @@ describe('Testing source controller', function () {
 
         expect(windowMock.alert).toHaveBeenCalledWith('Success: SIM.xlsx uploaded.');
         expect(controller.config).toEqual({});
-    })
+    });
 
     it('should alert user on upload file error', function(){
         controller.config = {
@@ -164,8 +167,27 @@ describe('Testing source controller', function () {
         httpBackend.when('POST', '/upload').respond(200, response);
         controller.upload(mockFile);    
         httpBackend.flush();
-        
         expect(windowMock.alert).toHaveBeenCalledWith('an error occured');
-    })
+    });
+
+    it('should call showModal function on click on attachment svg', function() {
+        var fakeModal = {
+            result: {
+                then: function(cancelCallback) {
+                    //Store the callbacks for later when the user clicks on the Cancel button of the dialog
+                    this.cancelCallback = cancelCallback;
+                }
+            }
+        };
+
+        var modalResult = {};
+        var mockModalInstance = { result: $q.resolve(modalResult) };
+        spyOn(mockModalInstance.result, 'then').and.callThrough();
+        spyOn(modalInstance, 'open').and.returnValue(mockModalInstance);
+
+        controller.showModal();
+        scope.$digest();
+        expect(modalInstance.open).toHaveBeenCalled();
+    });
 
 });

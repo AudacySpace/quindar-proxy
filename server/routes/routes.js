@@ -4,6 +4,7 @@
     var fs = require('fs');
     var XLSX = require("xlsx");
     var jsonfile = require('jsonfile');
+    var csv = require('csvtojson');
     var parse = require('../scripts/parseExcel.js');
     var parseCommands = require('../scripts/parseCommands.js');
     var Config = require('../model/configuration');
@@ -74,6 +75,27 @@
                 return callback(new Error('Wrong extension. Please upload an xlsx file.'));
             }
             callback(null, true);
+        }
+    }).single('file');
+
+    //Storage for uploaded attachments
+    var attachmentsStorage = multer.diskStorage({
+        destination: function(req,file,cb){
+            cb(null,'/tmp/uploads/')
+        },
+        filename: function(req,file,cb){
+            cb(null,file.originalname);
+        }
+    });
+
+    //function to upload aggregator file
+    var attachmentsupload = multer({
+        storage: attachmentsStorage,
+        fileFilter: function(req,file,callback){
+            if(['csv'].indexOf(file.originalname.split('.')[file.originalname.split('.').length-1]) === -1){
+                return callback(new Error('Wrong extension. Please upload an xlsx file.'));
+            }
+            callback(null,true);
         }
     }).single('file');
 
@@ -373,4 +395,166 @@
         });
         res.json({error_code:0,err_desc:null});
     });
+
+    //To save Aggregator File Data
+    app.post('/saveAggregatorFile', function(req, res) {
+        attachmentsupload(req,res,function(err){
+            if(err){
+                console.log(err);
+                res.json({error_code:1,err_desc:err});
+                return;
+            }
+
+            try {
+                var csvFilePath = req.file.path;
+                var beaconId = req.body.id;
+                var sourceip = req.body.sourceip;
+
+                csv().fromFile(csvFilePath).on("end_parsed",function(jsonObj){
+                    // combine csv header row and csv line to a json object
+                    Config.findOne({'source.ipaddress' : sourceip }, function(err, config) {
+                        if (err) {
+                            console.log("Error finding aggregator file: " + err);
+                            throw err;
+                        }
+
+                        //check if the file has both Parameter and Bits property for each row
+                        var parameterCount = 0;
+                        for(var a=0;a<jsonObj.length;a++){
+                            if(Object.keys(jsonObj[a]).length >= 2){ // check if the file has atleast 2 parameters 
+                                parameterCount++;
+                            }
+                        }
+
+                        if(config && parameterCount === jsonObj.length){
+                            if(config.attachments.length > 0){
+                                //if there exists an attachment with the same id,
+                                //ask user to update the csv,else do not update
+                                //if update
+                                //copy the new values to the old values.
+                                var attachmentId = "";
+                                for(var i=0;i<config.attachments.length;i++){
+                                    if(config.attachments[i].id === beaconId){
+                                        attachmentId = i;
+                                        break;
+                                    }
+                                }
+
+                                if(attachmentId !== ""){
+                                    var newjsonArray = convertBitLenType(jsonObj);
+                                    config.attachments[attachmentId].data = newjsonArray;
+                                    config.attachments[attachmentId].filename = req.file.originalname;
+                                    config.markModified('attachments');
+
+                                    config.save(function(err) {
+                                    if (err) throw err;
+                                        console.log(' Attachment data updated successfully for ');
+                                    });
+                                    res.json({error_code:0,error_desc:"update"});
+
+                                }else {
+                                    var newattachment = {
+                                        id:"",
+                                        filename:"",
+                                        data:[]
+                                    };
+
+                                    newattachment.id = beaconId;
+                                    newattachment.filename = req.file.originalname;
+                                    var newjsonArray = convertBitLenType(jsonObj);
+                                    newattachment.data = newjsonArray;
+                                    config.attachments.push(newattachment);
+
+                                    config.save(function(err) {
+                                    if (err) throw err;
+                                        console.log(' Attachment data added successfully for ');
+                                    });
+                                    res.json({error_code:0,error_desc:"add"});
+                                }  
+                            }else {
+                                //push to attachments array
+                                //each attachment will have an id,filename,data
+
+                                var newattachment = {
+                                    id:"",
+                                    filename:"",
+                                    data:[]
+                                };
+
+                                newattachment.id = beaconId;
+                                newattachment.filename = req.file.originalname;
+                                var newjsonArray = convertBitLenType(jsonObj);
+                                newattachment.data = newjsonArray;
+
+                                config.attachments.push(newattachment);
+                                config.save(function(err,result){
+                                    if(err){
+                                        console.log(err);
+                                    }
+                                    if(result){
+                                        console.log('First attachment data saved successfully for ');
+                                    }
+                                });
+                                res.json({error_code:0,error_desc:"add"});
+                            }
+                        }else {
+                            res.json({error_code:1,error_desc:"Does not have all the rows data"});
+                        }
+                    });
+                    
+                });
+            } catch (e){
+                res.json({error_code:1,err_desc:"Corrupted csv file"});
+            }
+        });
+    });
+
+    app.get('/getAttachments', function(req,res){
+        var sourceip = req.query.sourceip;
+        Config.findOne({'source.ipaddress' : sourceip}, function(err, config) {
+            if (err) {
+                console.log("Error finding configurations in DB: " + err);
+                throw err;
+            }
+
+            if(config){
+                res.send(config.attachments);
+            }            
+        });
+    });
+
+    app.post('/removeAttachment', function(req,res){
+        var beaconId = req.body.id;
+        var sourceip = req.body.sourceip;
+
+        Config.findOne({'source.ipaddress' : sourceip}, function(err, config) {
+            if (err) {
+                console.log("Error finding configuration in DB: " + err);
+                throw err;
+            }
+            if(config){
+                for(var i=0;i<config.attachments.length;i++){
+                    if(config.attachments[i].id === beaconId){
+                        config.attachments.splice(i,1);
+                    }
+                }
+                config.markModified('attachments');
+                config.save(function(err) {
+                    if (err) throw err;
+                    console.log(' The attachment with Id:' + beaconId +' for '+ 'is deleted.');
+                }); 
+                res.json({error_code:0,err_desc:null});
+            }
+        });
+    });
+}
+
+function convertBitLenType(jsonObj){
+    //If the bits length is the csv file is enclosed in quotes,it is assumed as string,
+    //so convert to integer before storing in the database.
+    var fileLength = jsonObj.length;
+    for(var i=0;i<fileLength;i++){
+        jsonObj[i].Bits = parseInt(jsonObj[i].Bits);
+    }
+    return jsonObj;
 }

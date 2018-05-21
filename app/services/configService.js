@@ -6,7 +6,26 @@ sourceApp
             method: "GET"
         });
     }
+
+    function getAttachments(sourceip){
+    	return $http({
+    		url: "/getAttachments",
+    		method: "GET",
+    		params: {'sourceip':sourceip}
+    	});
+    }
+
+    function removeAttachment(id,sourceip) {
+    	return $http({
+    		url: "/removeAttachment",
+    		method: "POST",
+    		data : {"id":id,'sourceip':sourceip}
+    	});
+    }
+
     return { 
-        getConfig : getConfig
+        getConfig : getConfig,
+        getAttachments : getAttachments,
+        removeAttachment : removeAttachment
     }
 }]);
