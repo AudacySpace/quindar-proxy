@@ -1,6 +1,7 @@
-module.exports = function(io, async) {
+module.exports = function(socket) {
 
 	//var math = require('mathjs');
+	var async = require('async');
 	var Config = require('../model/configuration');
 	var Telemetry = require('../model/telemetry');
 	//var Command = require('../model/command');
@@ -9,82 +10,63 @@ module.exports = function(io, async) {
 	//var newcommand = {};
 	var clients = {};
 
-	//Listen to the Gateway server streaming data
-	io.on('connection', function(socket){
-		console.log('socket.io server connected.');
+	socket.on('zeroData', function(data){
+		source = socket.handshake.headers['x-real-ip'];
 
-		//add clients socket id using mission name
-		socket.on('add-mission', function(data){
-			clients[data.mission] = {
-				"socket" : socket.id
-			}
-		});
+		try {
+			var parsedData = JSON.parse(data);
+		} catch (e) {
+			console.log("Data is not JSON format");
+			throw e;
+		}
 
-		socket.on('disconnect', function(){
-			for(var client in clients){
-		        if(clients[client]["socket"] == socket.id){
-					delete clients[client];
-		        }
-		    }
-		});
+		async.waterfall([
+			//Load the configuration from database
+			function(callback) {
+				// source = "10.0.0.100"
+				// parsedData= {
+				// 	'id' : 1, 
+				// 	'data' : '111100000000101010101011100010010101011010101010101010100111110000000'
+				// };
+				Config.findOne({ 'source.ipaddress' : source, 'attachments.id' : parsedData['id'] }, 
+					{ 'source' : 1, 'contents': 1, 'attachments.$': 1 }, function(err, config) {
+					if (err) {
+			            console.log("Error finding configurations in DB: " + err);
+			            return callback(err);
+			        }
 
-		socket.on('zeroData', function(data){
-			source = socket.handshake.headers['x-real-ip'];
+			        if (config) {
+			            // if there is an existing configuration for source, update it
+			            configuration.contents = config.contents;
+		                configuration.source.name = config.source.name;
+		                configuration.source.ipaddress = source;
+		                configuration.attachments = config.attachments;
+		                // console.log("Loaded configuration for " + source);
+		                // console.log(config);
+		                // console.log(config.attachments);
+		                callback(null, configuration);
 
-			try {
-			    var parsedData = JSON.parse(data);
-			} catch (e) {
-			    console.log("Data is not JSON format");
-			    throw e;
-			}
+		            } else {
+		                console.log("There is no defined configuration for " + source);
+		                callback(null, false);
+		            }
+		        });
+			},
 
-			async.waterfall([
-				//Load the configuration from database
-				function(callback) {
-					// source = "10.0.0.100"
-					// parsedData= {
-					// 	'id' : 1, 
-					// 	'data' : '111100000000101010101011100010010101011010101010101010100111110000000'
-					// };
-					Config.findOne({ 'source.ipaddress' : source, 'attachments.id' : parsedData['id'] }, 
-						{ 'source' : 1, 'contents': 1, 'attachments.$': 1 }, function(err, config) {
-						if (err) {
-			                console.log("Error finding configurations in DB: " + err);
-			                return callback(err);
-			            }
+			//Divide the bit stream as per identified beacon
+			function(configuration, callback) {
+				if(configuration.attachments[0]){
+					var agg = configuration.attachments[0];
+					var bitStream = parsedData['data'];
 
-			            if (config) {
-			                // if there is an existing configuration for source, update it
-			                configuration.contents = config.contents;
-		                    configuration.source.name = config.source.name;
-		                    configuration.source.ipaddress = source;
-		                    configuration.attachments = config.attachments;
-		                    // console.log("Loaded configuration for " + source);
-		                    // console.log(config);
-		                    // console.log(config.attachments);
-		                    callback(null, configuration);
+					var aggObj = new Object();
+					for (var i=0; i<agg.contents.length; i++){
+						var id = bitStream.substr(0, agg.contents[i].length);
+						bitStream = bitStream.substr(agg.contents[i].length);
+						aggObj[agg.contents[i].name] = id;
+					}
 
-		                } else {
-		                    console.log("There is no defined configuration for " + source);
-		                    callback(null, false);
-		                }
-		            });
-				},
-
-				//Divide the bit stream as per identified beacon
-				function(configuration, callback) {
-					if(configuration.attachments[0]){
-						var agg = configuration.attachments[0];
-						var bitStream = parsedData['data'];
-
-						var aggObj = new Object();
-						for (var i=0; i<agg.contents.length; i++){
-						  var id = bitStream.substr(0, agg.contents[i].length);
-						  bitStream = bitStream.substr(agg.contents[i].length);
-						  aggObj[agg.contents[i].name] = id;
-						}
-
-						parsedData['data'] = aggObj;
+					parsedData['data'] = aggObj;
 
 	// 					var newTelemetry = new Telemetry();
 	// 					newTelemetry['mission'] = parsedData['mission'];
@@ -147,19 +129,17 @@ module.exports = function(io, async) {
 
 	// 						callback(null, 'Data saved successfully!');
 	// 					});
-						callback(null, 'Data saved successfully!');
-					} 
+					callback(null, 'Data saved successfully!');
+				} 
 					// else {
 	// 					callback(null, 'No configuration set for this data stream');
 	// 				}
-				}
-			], function (err, result) {
-				if(err) throw err;
+			}
+		], function (err, result) {
+			if(err) throw err;
 
-				console.log(result);
-			});		
-
-		});
+			console.log(result);
+		});		
 
 	});
 }
