@@ -3,8 +3,6 @@ var app = express();
 var bodyParser = require('body-parser');
 var server = require('http').createServer(app);
 var mongoose = require('mongoose');
-var julian = require('julian');
-var async = require('async');
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -46,4 +44,4 @@ require('./server/scripts/proxyAppStatus')();
 require('./server/routes/routes.js')(app);
 
 // script to read socket stream ================================================
-require('./server/scripts/socket.js')(io, julian, async);
+require('./server/scripts/socket.js')(io);
