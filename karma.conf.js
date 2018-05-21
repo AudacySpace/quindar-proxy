@@ -16,7 +16,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
         './node_modules/angular/angular.js',
-        './node_modules/angular-ui-router/release/angular-ui-router.js',
+        './node_modules/@uirouter/release/angular-ui-router.js',
         './node_modules/angular-mocks/angular-mocks.js',
         './node_modules/angular-aria/angular-aria.js',
         './node_modules/angular-animate/angular-animate.js',
