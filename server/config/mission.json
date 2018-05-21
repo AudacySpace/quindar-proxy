@@ -1,0 +1,8 @@
+{
+	"ATest" : {
+		"library" : "../scripts/gmat.js"
+	},
+	"AZero" : {
+		"library" : "../scripts/simulator.js"
+	}
+}
