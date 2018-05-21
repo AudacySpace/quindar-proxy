@@ -93,7 +93,7 @@
         storage: attachmentsStorage,
         fileFilter: function(req,file,callback){
             if(['csv'].indexOf(file.originalname.split('.')[file.originalname.split('.').length-1]) === -1){
-                return callback(new Error('Wrong extension. Please upload an xlsx file.'));
+                return callback(new Error('Wrong extension. Please upload a csv file.'));
             }
             callback(null,true);
         }
@@ -404,13 +404,12 @@
                 res.json({error_code:1,err_desc:err});
                 return;
             }
-
             try {
                 var csvFilePath = req.file.path;
                 var beaconId = req.body.id;
                 var sourceip = req.body.sourceip;
 
-                csv().fromFile(csvFilePath).on("end_parsed",function(jsonObj){
+                csv().fromFile(csvFilePath).then(function(jsonObj){
                     // combine csv header row and csv line to a json object
                     Config.findOne({'source.ipaddress' : sourceip }, function(err, config) {
                         if (err) {
@@ -448,7 +447,7 @@
 
                                     config.save(function(err) {
                                     if (err) throw err;
-                                        console.log(' Attachment data updated successfully for ');
+                                        console.log(' Attachment data updated successfully.');
                                     });
                                     res.json({error_code:0,error_desc:"update"});
 
@@ -467,7 +466,7 @@
 
                                     config.save(function(err) {
                                     if (err) throw err;
-                                        console.log(' Attachment data added successfully for ');
+                                        console.log(' Attachment data added successfully.');
                                     });
                                     res.json({error_code:0,error_desc:"add"});
                                 }  
@@ -492,7 +491,7 @@
                                         console.log(err);
                                     }
                                     if(result){
-                                        console.log('First attachment data saved successfully for ');
+                                        console.log('First attachment data saved successfully.');
                                     }
                                 });
                                 res.json({error_code:0,error_desc:"add"});

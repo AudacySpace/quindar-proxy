@@ -11,6 +11,7 @@
   "dependencies": {
     "async": "2.1.4",
     "body-parser": "^1.15.1",
+    "csvtojson": "^2.0.0",
     "ejs": "~2.5.2",
     "express": "^4.13.3",
     "fs": "0.0.1-security",
