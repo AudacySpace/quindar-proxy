@@ -4,11 +4,8 @@ module.exports = function() {
 	var async = require('async');
 	var Config = require('../model/configuration');
 	var Telemetry = require('../model/telemetry');
-	//var Command = require('../model/command');
 	var source = "";
 	var configuration = new Config();
-	//var newcommand = {};
-	var clients = {};
 
 	socket.on('zeroData', function(data){
 		source = socket.handshake.headers['x-real-ip'];
@@ -23,6 +20,7 @@ module.exports = function() {
 		async.waterfall([
 			//Load the configuration from database
 			function(callback) {
+				//test data when no socket connection
 				// source = "10.0.0.100";
 				// parsedData= {
 				// 	'id' : '3',
@@ -43,9 +41,7 @@ module.exports = function() {
 		                configuration.source.name = config.source.name;
 		                configuration.source.ipaddress = source;
 		                configuration.attachments = config.attachments;
-		                // console.log("Loaded configuration for " + source);
-		                // console.log(config);
-		                // console.log(config.attachments);
+		                console.log("Loaded configuration for " + source);
 		                callback(null, configuration);
 
 		            } else {
@@ -107,17 +103,23 @@ module.exports = function() {
 							telemetry[point].warn_high = configuration.contents[point].warn_high;
 						}
 
-						if(!configuration.contents[point].expression) {
+						if(configuration.contents[point].expression) {
+							var datatype = configuration.contents[point].datatype;
+							if(datatype == "timestamp" || datatype == "raw" || datatype == "hex") {
+								//for these datatypes, store the value in the data stream as it is
+								telemetry[point].value = parsedData['data'][point];
+							} else {
+								//expression mode,  evaluate the expression and store it
+								try {
+									var code = math.compile(configuration.contents[point].expression);
+									telemetry[point].value = code.eval(parsedData['data']);
+								} catch (e) {
+									console.log("Error evaluating expressions using Mathjs: " + e)
+								}
+							}
+						} else {
 							//value mode, store the value in the data stream as it is
 							telemetry[point].value = parsedData['data'][point];
-						} else {
-							//expression mode,  evaluate the expression and store it
-							try {
-								var code = math.compile(configuration.contents[point].expression);
-								telemetry[point].value = code.eval(parsedData['data']);
-							} catch (e) {
-								console.log("Error evaluating expressions using Mathjs: " + e)
-							}
 						}
 
 					}
