@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports = function(socket) {
 
 	var math = require('mathjs');
 	var async = require('async');
@@ -23,7 +23,7 @@ module.exports = function() {
 				//test data when no socket connection
 				// source = "10.0.0.100";
 				// parsedData= {
-				// 	'id' : '3',
+				// 	'id' : 3,
 				// 	'data' : '1011111110001100110011001100110111000101010110001000000011000101010110000000110001111011110001010101100010110110000010010101001000110001111111111111111111111111111111111111111',
 				// 	'timestamp' : '1527032088',
 				// 	'mission' : 'Test'
@@ -69,6 +69,7 @@ module.exports = function() {
 					var newTelemetry = new Telemetry();
 					newTelemetry['mission'] = parsedData['mission'];
 					newTelemetry['source'] = configuration.source.name;
+					newTelemetry['beaconID'] = parsedData['id'];
 					newTelemetry['timestamp'] = new Date(parsedData['timestamp'] * 1000);
 					var telemetry = new Object();
 

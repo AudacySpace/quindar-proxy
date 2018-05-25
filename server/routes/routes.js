@@ -406,101 +406,83 @@
             }
             try {
                 var csvFilePath = req.file.path;
-                var beaconId = req.body.id;
+                var beaconId = parseInt(req.body.id);
                 var sourceip = req.body.sourceip;
+                var convertedObj = {};
 
                 csv().fromFile(csvFilePath).then(function(jsonObj){
-                    // combine csv header row and csv line to a json object
-                    Config.findOne({'source.ipaddress' : sourceip }, function(err, config) {
-                        if (err) {
-                            console.log("Error finding aggregator file: " + err);
-                            throw err;
-                        }
+                    console.log(jsonObj);
 
-                        //check if the file has both Parameter and Bits property for each row
-                        var parameterCount = 0;
-                        for(var a=0;a<jsonObj.length;a++){
-                            if(Object.keys(jsonObj[a]).length >= 2){ // check if the file has atleast 2 parameters 
-                                parameterCount++;
-                            }
+                    //check if the file has both Parameter and Bits property for each row
+                    var parameterCount = 0;
+                    for(var a=0;a<jsonObj.length;a++){
+                        if(Object.keys(jsonObj[a]).length >= 2){ // check if the file has atleast 2 parameters 
+                            parameterCount++;
                         }
+                    }
 
-                        if(config && parameterCount === jsonObj.length){
-                            if(config.attachments.length > 0){
-                                //if there exists an attachment with the same id,
-                                //ask user to update the csv,else do not update
-                                //if update
-                                //copy the new values to the old values.
-                                var attachmentId = "";
-                                for(var i=0;i<config.attachments.length;i++){
-                                    if(config.attachments[i].id === beaconId){
-                                        attachmentId = i;
-                                        break;
-                                    }
+                    if(parameterCount !== jsonObj.length){ 
+                        res.json({error_code:1,error_desc:"Does not have all the rows data"});
+                    } else {
+                        var convertedObj = checkBitType(jsonObj);
+                        console.log(convertedObj);
+                        if (!convertedObj) {
+                            res.json({error_code:1,error_desc:"Bits column has non numeric data"});
+                        } else {
+                            // combine csv header row and csv line to a json object
+                            Config.findOne({'source.ipaddress' : sourceip }, function(err, config) {
+                                if (err) {
+                                    console.log("Error finding configuration: " + err);
+                                    throw err;
                                 }
 
-                                if(attachmentId !== ""){
-                                    var newjsonArray = convertBitLenType(jsonObj);
-                                    config.attachments[attachmentId].data = newjsonArray;
-                                    config.attachments[attachmentId].filename = req.file.originalname;
-                                    config.markModified('attachments');
-
-                                    config.save(function(err) {
-                                    if (err) throw err;
-                                        console.log(' Attachment data updated successfully.');
-                                    });
-                                    res.json({error_code:0,error_desc:"update"});
-
-                                }else {
-                                    var newattachment = {
-                                        id:"",
-                                        filename:"",
-                                        data:[]
-                                    };
-
-                                    newattachment.id = beaconId;
-                                    newattachment.filename = req.file.originalname;
-                                    var newjsonArray = convertBitLenType(jsonObj);
-                                    newattachment.data = newjsonArray;
-                                    config.attachments.push(newattachment);
-
-                                    config.save(function(err) {
-                                    if (err) throw err;
-                                        console.log(' Attachment data added successfully.');
-                                    });
-                                    res.json({error_code:0,error_desc:"add"});
-                                }  
-                            }else {
-                                //push to attachments array
-                                //each attachment will have an id,filename,data
-
-                                var newattachment = {
-                                    id:"",
-                                    filename:"",
-                                    data:[]
-                                };
-
-                                newattachment.id = beaconId;
-                                newattachment.filename = req.file.originalname;
-                                var newjsonArray = convertBitLenType(jsonObj);
-                                newattachment.data = newjsonArray;
-
-                                config.attachments.push(newattachment);
-                                config.save(function(err,result){
-                                    if(err){
-                                        console.log(err);
+                                if(config) {
+                                    var attachmentId = "";
+                                    for(var i=0;i<config.attachments.length;i++){
+                                        if(config.attachments[i].id === beaconId){
+                                            attachmentId = i;
+                                            break;
+                                        }
                                     }
-                                    if(result){
-                                        console.log('First attachment data saved successfully.');
+
+                                    if(attachmentId !== ""){
+                                        // update the aggregator file
+                                        var newjsonArray = convertedObj;
+                                        config.attachments[attachmentId].data = newjsonArray;
+                                        config.attachments[attachmentId].filename = req.file.originalname;
+                                        config.markModified('attachments');
+
+                                        config.save(function(err) {
+                                        if (err) throw err;
+                                            console.log(' Attachment data updated successfully.');
+                                        });
+                                        res.json({error_code:0,error_desc:"update"});
+
+                                    }else {
+                                        //push to attachments array
+                                        //each attachment will have an id,filename,data
+                                        var newattachment = {
+                                            id:"",
+                                            filename:"",
+                                            data:[]
+                                        };
+
+                                        newattachment.id = beaconId;
+                                        newattachment.filename = req.file.originalname;
+                                        var newjsonArray = convertedObj;
+                                        newattachment.data = newjsonArray;
+                                        config.attachments.push(newattachment);
+
+                                        config.save(function(err) {
+                                        if (err) throw err;
+                                            console.log(' Attachment data added successfully.');
+                                        });
+                                        res.json({error_code:0,error_desc:"add"});
                                     }
-                                });
-                                res.json({error_code:0,error_desc:"add"});
-                            }
-                        }else {
-                            res.json({error_code:1,error_desc:"Does not have all the rows data"});
+                                }
+                            });
                         }
-                    });
-                    
+                    }  
                 });
             } catch (e){
                 res.json({error_code:1,err_desc:"Corrupted csv file"});
@@ -548,11 +530,14 @@
     });
 }
 
-function convertBitLenType(jsonObj){
-    //If the bits length is the csv file is enclosed in quotes,it is assumed as string,
-    //so convert to integer before storing in the database.
-    var fileLength = jsonObj.length;
-    for(var i=0;i<fileLength;i++){
+//False if the "Bits" column has non number values, else convert Bits to numeric
+function checkBitType(jsonObj){
+    var numbers = /^[0-9]+$/;
+    for(var i=0; i<jsonObj.length; i++){
+        var bits = jsonObj[i].Bits;
+        if(!bits.match(numbers)){
+            return false;
+        }
         jsonObj[i].Bits = parseInt(jsonObj[i].Bits);
     }
     return jsonObj;
