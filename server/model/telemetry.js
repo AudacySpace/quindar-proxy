@@ -6,6 +6,7 @@ var telemetrySchema = mongoose.Schema({
     mission : String,
     source : String,
     timestamp : Date,
+    beaconID : Number,
     telemetry : Object
 }, { collection: 'telemetry' });
 

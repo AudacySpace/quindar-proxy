@@ -4,5 +4,8 @@
 	},
 	"AZero" : {
 		"library" : "../scripts/simulator.js"
+	},
+	"Audacy Zero" : {
+		"library" : "../scripts/zero.js"
 	}
 }

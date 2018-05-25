@@ -155,6 +155,11 @@ sourceApp.controller('aggFileUploadController', ['$scope','$uibModalInstance','m
                 //reset the input fields on the form
                 $ctrl.formDetails = {};
                 $ctrl.uploadAggFile_form.$setPristine();
+            }else if(resp.data.error_code === 1 && resp.data.error_desc === "Bits column has non numeric data"){
+                $window.alert("Bits column has non numeric data");
+                //reset the input fields on the form
+                $ctrl.formDetails = {};
+                $ctrl.uploadAggFile_form.$setPristine();
             }else {
                 $window.alert('An error occured');
             }

@@ -319,6 +319,44 @@ describe('Testing aggregator file upload controller', function () {
         expect(controller.formDetails).toEqual({});
     });
 
+    it('should not upload the aggregator file when Bits column has non numeric value', function(){
+        controller.uploadAggFile_form= {
+            $valid: true,
+            $setPristine : function(){}
+        };
+        controller.formDetails = {
+            file: {
+                name: "aggTest.csv"
+            },
+            id:100,
+            sourceip: '100.100.100.100'
+        };
+
+        var resp = {
+            config: {
+                data: {
+                    file:{
+                        name: 'aggTest.csv'
+                    }
+                }
+            },
+            error_code : 1,
+            error_desc : "Bits column has non numeric data"
+        }
+
+        var mockFile = {
+            "name": "aggTest.csv",
+            "size": 220,
+            "type": "text/csv"
+        };
+
+        httpBackend.when('POST', '/saveAggregatorFile').respond(200, resp);
+        controller.uploadCsv(mockFile);
+        httpBackend.flush();
+        expect(windowMock.alert).toHaveBeenCalledWith('Bits column has non numeric data');
+        expect(controller.formDetails).toEqual({});
+    });
+
     it('should not upload the aggregator file when some error', function(){
         controller.uploadAggFile_form= {
             $valid: true,
