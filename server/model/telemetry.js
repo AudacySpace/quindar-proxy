@@ -3,11 +3,26 @@ var mongoose = require('mongoose');
 
 // define the schema for our telemetry model
 var telemetrySchema = mongoose.Schema({
-    mission : String,
-    source : String,
-    timestamp : Date,
-    beaconID : Number,
-    telemetry : Object
+	mission : {
+		type : String,
+		required: true
+	},
+	source : {
+		type : String,
+		required: true
+	},
+	timestamp : {
+		type : Date,
+		required: true
+	},
+	beaconID : {
+		type : Number,
+		required: true
+	},
+	telemetry : {
+		type : Object,
+		required: true
+	},
 }, { collection: 'telemetry' });
 
 // define index on telemetry collection for fast retrieval of data

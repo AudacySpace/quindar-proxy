@@ -1,0 +1,137 @@
+[
+    {
+        "value": "36W BOL",
+        "coords": {
+            "position": "absolute",
+            "top": "5%",
+            "left": "25%"
+        },
+        "id": "solararrayvalue"
+    },
+    {
+		"value": "1.3A",
+        "coords": {
+            "position": "absolute",
+            "top": "68%",
+            "left": "20%"
+        },
+        "id": "chargingvalue"
+    },
+    {
+        "value": "0.12A",
+        "coords": {
+            "position": "absolute",
+            "top": "68%",
+			"left": "32%"
+        },
+        "id": "heatervalue"
+    },
+    {
+        "value": "0.11A",
+        "coords": {
+            "position": "absolute",
+            "top": "40%",
+            "left": "37%"
+        },
+        "id": "obcvalue"
+    },
+    {
+        "value": "0.22A",
+        "coords": {
+            "position": "absolute",
+            "top": "40%",
+            "left": "45%"
+        },
+        "id": "gpsvalue"
+    },
+    {
+        "value": "0.4A",
+        "coords": {
+            "position": "absolute",
+            "top": "40%",
+            "left": "53%"
+        },
+        "id": "camvalue"
+    },
+    {
+        "value": "3A",
+        "coords": {
+            "position": "absolute",
+            "top": "40%",
+            "left": "61%"
+        },
+        "id": "commvalue"
+    },
+    {
+        "value": "0.6A",
+        "coords": {
+            "position": "absolute",
+            "top": "40%",
+            "left": "69%"
+        },
+        "id": "payloadvalue"
+    },
+    {
+        "value": "0.001A",
+        "coords": {
+            "position": "absolute",
+            "top": "55%",
+            "left": "40%"
+        },
+        "id": "adcsvalue1"
+    },
+    {
+        "value": "0.09A",
+        "coords": {
+            "position": "absolute",
+            "top": "55%",
+            "left": "46%"
+        },
+        "id": "adcsvalue2"
+    },
+    {
+        "value": "0.2A",
+        "coords": {
+            "position": "absolute",
+            "top": "61%",
+            "left": "49%"
+        },
+        "id": "rwvalue1"
+    },
+    {
+        "value": "0.09A",
+        "coords": {
+            "position": "absolute",
+            "top": "55%",
+            "left": "51.6%"
+        },
+        "id": "rwvalue2"
+    },
+    {
+        "value": "0.02A",
+        "coords": {
+            "position": "absolute",
+            "top": "61%",
+            "left": "55%"
+        },
+        "id": "rwvalue3"
+    },
+    {
+        "value": "0.014A",
+        "coords": {
+            "position": "absolute",
+            "top": "61%",
+            "left": "62%"
+        },
+        "id": "ssvalue"
+    },
+    {
+        "value": "0.22A",
+        "coords": {
+            "position": "absolute",
+            "top": "61%",
+            "left": "71%"
+        },
+        "id": "mtqvalue"
+    }
+]
