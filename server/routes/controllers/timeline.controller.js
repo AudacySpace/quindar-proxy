@@ -97,18 +97,20 @@ module.exports = {
         Timeline.find({}, {}, function(err, timelinedata) {
             if (err) {
                 console.log("Error finding map data in DB: " + err);
-                throw err;
+                //throw err;
             }
 
-            var timelinelist = [];
-            for(var i=0;i<timelinedata.length;i++){
+            if(timelinedata) {
+                var timelinelist = [];
+                for(var i=0;i<timelinedata.length;i++){
                     timelinelist.push({
                         "filename":timelinedata[i].filename,
                         "mission":timelinedata[i].mission,
                         "file":timelinedata[i].file
                     });
+                }
+               res.send(timelinelist);
             }
-           res.send(timelinelist); 
         });
     },
 
@@ -119,10 +121,12 @@ module.exports = {
         Timeline.findOne({'mission':mission}, function(err, timeline) {
             if (err) {
                 console.log("Error finding timeline: " + err);
-                throw err;
+                //throw err;
             }
-            timeline.remove();
+            if(timeline){
+                timeline.remove();
+                res.json({error_code:0,err_desc:null});
+            }
         });
-        res.json({error_code:0,err_desc:null});
     }
 }

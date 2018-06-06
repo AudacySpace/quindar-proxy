@@ -7,21 +7,23 @@ module.exports = {
         Imagemap.find({}, {}, function(err, mapdata) {
             if (err) {
                 console.log("Error finding map data in DB: " + err);
-                throw err;
             }
 
-            var imagelist = [];
-            for(var i=0;i<mapdata.length;i++){
-                for(j=0;j<mapdata[i].uploadedfiles.length;j++){
-                    imagelist.push({
-                        "imageid":mapdata[i].uploadedfiles[j].imageid,
-                        "mission":mapdata[i].mission,
-                        "imagefile":mapdata[i].uploadedfiles[j].imagefile,
-                        "contentsfile":mapdata[i].uploadedfiles[j].contentsfile
-                    });
+            if(mapdata) {
+                var imagelist = [];
+                for(var i=0;i<mapdata.length;i++){
+                    //console.log(mapdata[i]);
+                    for(j=0;j<mapdata[i].uploadedfiles.length;j++){
+                        imagelist.push({
+                            "imageid":mapdata[i].uploadedfiles[j].imageid,
+                            "mission":mapdata[i].mission,
+                            "imagefile":mapdata[i].uploadedfiles[j].imagefile,
+                            "contentsfile":mapdata[i].uploadedfiles[j].contentsfile
+                        });
+                    }
                 }
+                res.send(imagelist); 
             }
-           res.send(imagelist); 
         });
     },
 
@@ -88,7 +90,7 @@ module.exports = {
         Imagemap.findOne({'mission':mission}, function(err, mapdata) {
             if (err) {
                 console.log("Error finding map data in DB: " + err);
-                throw err;
+                //throw err;
             }
             if(mapdata){
                 for(var i=0;i<mapdata.uploadedfiles.length;i++){
@@ -102,8 +104,8 @@ module.exports = {
                     if (err) throw err;
                     console.log(' The image map:' + imageid +' for ' +req.body.mission + 'is deleted.');
                 }); 
+                res.json({error_code:0,err_desc:null});
             }
         });
-        res.json({error_code:0,err_desc:null});
     }
 }

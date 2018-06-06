@@ -1,0 +1,8 @@
+Parameter,Bits
+"cdh_DataPool_platform_DummySubsys1_dummyParam32","32"
+"cdh_DataPool_platform_DummySubsys1_dummyParam16","16"
+"cdh_DataPool_platform_DummySubsys1_dummyParam8"
+"cdh_DataPool_platform_DummySubsys1_dummyParam1","32"
+"cdh_DataPool_platform_DummySubsys1_dummyParam2","16"
+"cdh_DataPool_platform_DummySubsys1_dummyParam3","31"
+"cdh_DataPool_platform_DummySubsys1_dummyParam4","40"

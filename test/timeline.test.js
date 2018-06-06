@@ -7,6 +7,7 @@ mongoose.Promise = global.Promise;
 var expect = chai.expect;
 var assert = chai.assert;
 var TIM = require('../server/model/timeline');
+var timelineCtrl = require('../server/routes/controllers/timeline.controller');
 
 describe('Test Suite for timeline Model ', function() {
     it('should be invalid if the model is empty', function() {
@@ -115,4 +116,178 @@ describe('Test Suite for timeline Model ', function() {
             expect(err.errors.filename.name).to.equal('CastError');
         });  
     });
+});
+
+describe('Test Suite for Timeline Route Controller', function() {
+    beforeEach(function() {
+        sinon.stub(TIM, 'find');
+        sinon.stub(TIM,'findOne');
+        sinon.stub(TIM.prototype,'save');
+    });
+
+    afterEach(function() {
+        TIM.find.restore();
+        TIM.findOne.restore();
+        TIM.prototype.save.restore();
+    });
+
+    it('should get all timelines', function() {
+        var timelineData = [
+            {
+                "mission": "AZero",
+                "file": "timeline-2.xlsx",
+                "filename": "Timeline",
+                "events": []
+            }
+        ];
+
+        var list = [
+            {
+                "mission": "AZero",
+                "file": "timeline-2.xlsx",
+                "filename": "Timeline"
+            }
+        ];
+
+        TIM.find.yields(null, timelineData);
+
+        var req = {
+            query : {}
+
+        };
+        var res = {
+            send: sinon.stub()
+        };
+
+        timelineCtrl.getTimelines(req, res);
+        sinon.assert.calledWith(TIM.find,{},{},sinon.match.func);
+        expect(res.send.calledOnce).to.be.true;
+        sinon.assert.calledWith(res.send, list);
+    });
+
+    it('should not get all timelines when error', function() {
+        TIM.find.yields({"name":"Mongo Error"},null);
+
+        var req = {
+            query : {}
+
+        };
+        var res = {
+            send: sinon.stub()
+        };
+
+        timelineCtrl.getTimelines(req, res);
+        sinon.assert.calledWith(TIM.find,{},{},sinon.match.func);
+        expect(res.send.calledOnce).to.be.false;
+    });
+
+    it('should remove the timeline file when deleted', function() {
+        var timeline = {
+            "mission": "AZero",
+            "file": "timeline-2.xlsx",
+            "filename": "Timeline",
+            "events": [],
+            save:function(callback){
+                var err = null;
+                var res = {"data":""};
+                callback(err,res);
+            },
+            remove:function(){
+
+            }
+        };
+
+        TIM.findOne.yields(null, timeline);
+
+        var req = {
+            body : {
+                'mission' : 'AZero'
+            }
+
+        };
+        var res = {
+            json: sinon.stub()
+        };
+
+        timelineCtrl.removeTimeline(req, res);
+        sinon.assert.calledWith(TIM.findOne, {'mission' : 'AZero'}, sinon.match.func);
+        expect(res.json.calledOnce).to.be.true;
+        sinon.assert.calledWith(res.json, {error_code:0,err_desc:null});
+    });
+
+    it('should not remove timeline files when error', function() {
+        TIM.findOne.yields({"name":"Mongo Error"},null);
+        var req = {
+            body : {
+                'mission' : 'AZero'
+            }
+
+        };
+        var res = {
+            json: sinon.stub()
+        };
+
+        timelineCtrl.removeTimeline(req, res);
+        sinon.assert.calledWith(TIM.findOne,{'mission' : 'AZero'},sinon.match.func);
+        expect(res.json.calledOnce).to.be.false;
+    });
+
+    it('should not save the erroneous timeline file to database', function() {
+        var timeline = null;
+        TIM.findOne.yields(null, timeline);
+
+        var req = {
+            body : {
+                'mission' : 'AZero'
+            },
+            file : {
+                fieldname: 'file',
+                originalname: 'timeline_error.xlsx',
+                encoding: '7bit',
+                mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                destination: './server/routes/files/',
+                filename: 'Timeline.xlsx',
+                path: './server/routes/files/timeline_error.xlsx',
+                size: 18320
+            }
+        };
+        var res = {
+            json: sinon.stub()
+        };
+
+        timelineCtrl.saveTimeline(req, res);
+        sinon.assert.calledWith(TIM.findOne,{'mission' : 'AZero'},sinon.match.func);
+        expect(res.json.calledOnce).to.be.true;
+        sinon.assert.calledWith(res.json, {error_code:1,err_desc:"No excel data"});
+    });
+
+    it('should save the timeline file to database when uploaded', function() {
+        var timeline = null;
+        TIM.findOne.yields(null, timeline);
+
+        var req = {
+            body : {
+                'mission' : 'AZero'
+            },
+            file : {
+                fieldname: 'file',
+                originalname: 'timeline-2.xlsx',
+                encoding: '7bit',
+                mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                destination: './server/routes/files/',
+                filename: 'Timeline.xlsx',
+                path: './server/routes/files/timeline-2.xlsx',
+                size: 18320
+            }
+        };
+        var res = {
+            json: sinon.stub()
+        };
+
+        timelineCtrl.saveTimeline(req, res);
+        sinon.assert.calledWith(TIM.findOne,{'mission' : 'AZero'},sinon.match.func);
+        expect(res.json.calledOnce).to.be.true;
+        sinon.assert.calledWith(res.json, {error_code:0,err_desc:null});
+    });
+
 });

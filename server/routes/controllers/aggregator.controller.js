@@ -87,10 +87,11 @@ module.exports = {
 
 	getAttachments : function(req,res){
         var sourceip = req.query.sourceip;
+
         Config.findOne({'source.ipaddress' : sourceip}, function(err, config) {
             if (err) {
                 console.log("Error finding configurations in DB: " + err);
-                throw err;
+                //throw err;
             }
 
             if(config){
@@ -106,7 +107,7 @@ module.exports = {
         Config.findOne({'source.ipaddress' : sourceip}, function(err, config) {
             if (err) {
                 console.log("Error finding configuration in DB: " + err);
-                throw err;
+                //throw err;
             }
             if(config){
                 for(var i=0;i<config.attachments.length;i++){

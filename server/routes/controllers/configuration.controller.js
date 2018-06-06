@@ -13,10 +13,11 @@ module.exports = {
         Config.find({}, { source : 1, mission : 1 }, function(err, config) {
             if (err) {
                 console.log("Error finding configurations in DB: " + err);
-                throw err;
+                // throw err;
             }
-
-            res.send(config);
+            if(config) {
+                res.send(config);
+            }
         });
     }
 }
