@@ -16,7 +16,6 @@ describe('Test Suite for Telemetry Model ', function() {
             expect(err.errors.timestamp).to.exist;
             expect(err.errors.telemetry).to.exist;
             expect(err.errors.source).to.exist;
-            expect(err.errors.beaconID).to.exist;
         });
     });
 
@@ -56,14 +55,6 @@ describe('Test Suite for Telemetry Model ', function() {
         m.validate(function(err) {
             expect(err.errors.source).to.exist;
             expect(err.errors.source.name).to.equal('ValidatorError');
-        });
-    });
-
-    it('should invalidate when beaconID is not defined', function () {
-        var m = new TM({mission: 'AZero',timestamp:'2018-02-01T09:42:01.287Z', telemetry:{}, source: "Julia"});
-        m.validate(function(err) {
-            expect(err.errors.beaconID).to.exist;
-            expect(err.errors.beaconID.name).to.equal('ValidatorError');
         });
     });
 
