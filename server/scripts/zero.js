@@ -69,7 +69,6 @@ module.exports = function(socket) {
 					var newTelemetry = new Telemetry();
 					newTelemetry['mission'] = parsedData['mission'];
 					newTelemetry['source'] = configuration.source.name;
-					newTelemetry['beaconID'] = parsedData['id'];
 					newTelemetry['timestamp'] = new Date(parsedData['timestamp'] * 1000);
 					var telemetry = new Object();
 
