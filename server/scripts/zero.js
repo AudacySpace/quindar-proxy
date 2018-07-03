@@ -1,3 +1,4 @@
+//mission library for Audacy Zero
 module.exports = function(socket) {
 
 	var math = require('mathjs');
