@@ -5,6 +5,7 @@ module.exports = function(socket) {
 	var julian = require('julian');
 	var Config = require('../model/configuration');
 	var Telemetry = require('../model/telemetry');
+	var Helper = require('./helper.js');
 	// var Command = require('../model/command');
 	var source = "";
 	var configuration = new Config();
@@ -47,7 +48,7 @@ module.exports = function(socket) {
 			//Format the datastream as per configuration, if present
 			function(configuration, callback) {
 				if(configuration){
-					var newTelemetry = new Telemetry();
+					var newTelemetry = new Object();
 					newTelemetry['mission'] = parsedData['mission'];
 					newTelemetry['source'] = configuration.source.name;
 					newTelemetry['timestamp'] = julian.toDate(parsedData['timestamp']);
@@ -100,14 +101,13 @@ module.exports = function(socket) {
 							
 					}
 
-					newTelemetry['telemetry'] = convert(telemetry);
-						
-					newTelemetry.save(function(err) { 
-						if (err) {
+					newTelemetry['telemetry'] = Helper.convert(telemetry);
+
+					Helper.mergeTelm(newTelemetry, function(err, response){
+						if(err){
 							return callback(err);
 						}
-
-						callback(null, 'Data saved successfully!');
+						callback(null, response);
 					});
 				} else {
 					callback(null, 'No configuration set for this data stream');
@@ -120,27 +120,4 @@ module.exports = function(socket) {
 		});		
 
 	});
-}
-
-//Function to convert flat structure object to hierarchial structure
-function convert(obj) {
-    var result = {};
-    eachKeyValue(obj, function(namespace, value) {
-        var parts = namespace.split("_");
-        var last = parts.pop();
-        var node = result;
-        parts.forEach(function(key) {
-            node = node[key] = node[key] || {};
-        });
-        node[last] = value;
-    });
-    return result;
-}
-
-function eachKeyValue(obj, fun) {
-    for (var i in obj) {
-        if (obj.hasOwnProperty(i)) {
-            fun(i, obj[i]);
-        }
-    }
 }

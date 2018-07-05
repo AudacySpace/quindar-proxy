@@ -5,6 +5,8 @@ module.exports = function(socket) {
 	var async = require('async');
 	var Config = require('../model/configuration');
 	var Telemetry = require('../model/telemetry');
+	var Helper = require('./helper.js');
+
 	var source = "";
 	var configuration = new Config();
 
@@ -67,7 +69,7 @@ module.exports = function(socket) {
 
 					parsedData['data'] = aggObj;
 
-					var newTelemetry = new Telemetry();
+					var newTelemetry = new Object();
 					newTelemetry['mission'] = parsedData['mission'];
 					newTelemetry['source'] = configuration.source.name;
 					newTelemetry['timestamp'] = new Date(parsedData['timestamp'] * 1000);
@@ -125,14 +127,13 @@ module.exports = function(socket) {
 
 					}
 
-					newTelemetry['telemetry'] = convert(telemetry);
+					newTelemetry['telemetry'] = Helper.convert(telemetry);
 
-					newTelemetry.save(function(err) {
-						if (err) {
+					Helper.mergeTelm(newTelemetry, function(err, response){
+						if(err){
 							return callback(err);
 						}
-
-						callback(null, 'Data saved successfully!');
+						callback(null, response);
 					});
 				} else {
 					callback(null, 'No configuration set for this data stream');
@@ -144,29 +145,6 @@ module.exports = function(socket) {
 			console.log(result);
 		});
 	});
-}
-
-//Function to convert flat structure object to hierarchial structure
-function convert(obj) {
-    var result = {};
-    eachKeyValue(obj, function(namespace, value) {
-        var parts = namespace.split("_");
-        var last = parts.pop();
-        var node = result;
-        parts.forEach(function(key) {
-            node = node[key] = node[key] || {};
-        });
-        node[last] = value;
-    });
-    return result;
-}
-
-function eachKeyValue(obj, fun) {
-    for (var i in obj) {
-        if (obj.hasOwnProperty(i)) {
-            fun(i, obj[i]);
-        }
-    }
 }
 
 //convert hexadecimal values to decimal(signed or unsigned)
