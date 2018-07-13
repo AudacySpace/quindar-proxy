@@ -26,37 +26,50 @@ module.exports = function(socket) {
 				//test data when no socket connection
 				// source = "10.0.0.100";
 				// parsedData= {
-				// 	'id' : 3,
+				// 	'metadata' : {
+				// 		'id' : 5
+				// 	},
 				// 	'data' : '1011111110001100110011001100110111000101010110001000000011000101010110000000110001111011110001010101100010110110000010010101001000110001111111111111111111111111111111111111111',
 				// 	'timestamp' : '1527032088',
 				// 	'mission' : 'Test'
 				// };
-				Config.findOne({ 'source.ipaddress' : source, 'attachments.id' : parsedData['id'] }, 
-					{ 'source' : 1, 'contents': 1, 'attachments.$': 1 }, function(err, config) {
-					if (err) {
-			            console.log("Error finding configurations in DB: " + err);
-			            return callback(err);
-			        }
+				if(parsedData.hasOwnProperty("metadata")){
+					var metadata = parsedData["metadata"];
+					if(metadata.hasOwnProperty("id")){
+						Config.findOne({ 'source.ipaddress' : source, 'attachments.id' : metadata['id'] },
+							{ 'source' : 1, 'contents': 1, 'attachments.$': 1 }, function(err, config) {
+							if (err) {
+					            console.log("Error finding configurations in DB: " + err);
+					            return callback(err);
+					        }
 
-			        if (config) {
-			            // if there is an existing configuration for source, update it
-			            configuration.contents = config.contents;
-		                configuration.source.name = config.source.name;
-		                configuration.source.ipaddress = source;
-		                configuration.attachments = config.attachments;
-		                console.log("Loaded configuration for " + source);
-		                callback(null, configuration);
+					        if (config) {
+					            // if there is an existing configuration for source, update it
+					            configuration.contents = config.contents;
+				                configuration.source.name = config.source.name;
+				                configuration.source.ipaddress = source;
+				                configuration.attachments = config.attachments;
+				                console.log("Loaded configuration for " + source);
+				                callback(null, configuration);
 
-		            } else {
-		                console.log("There is no defined configuration for " + source);
-		                callback(null, false);
-		            }
-		        });
+				            } else {
+				                console.log("There is no defined configuration for " + source);
+				                callback(null, false);
+				            }
+				        });
+					} else {
+						console.log("The property id does not exist in metadata for " + source);
+				        callback(null, false);
+					}
+				} else {
+					console.log("The property metadata does not exist in data for " + source);
+					callback(null, false);
+				}
 			},
 
 			//Divide the bit stream as per identified beacon
 			function(configuration, callback) {
-				if(configuration.attachments[0]){
+				if(configuration.attachments !== undefined){
 					var agg = configuration.attachments[0];
 					var bitStream = parsedData['data'];
 
