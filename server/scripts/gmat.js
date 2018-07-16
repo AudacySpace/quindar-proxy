@@ -58,7 +58,7 @@ module.exports = function(socket) {
 
 						//create new object for each configuration data point
 						telemetry[point] = new Object();
-						telemetry[point].notes = configuration.contents[point].notes;
+						telemetry[point].notes = configuration.contents[point].description;
 						telemetry[point].units = configuration.contents[point].units;
 
 						if(configuration.contents[point].datatype == "date"){
