@@ -13,27 +13,25 @@ describe('Test Suite for Command Model ', function() {
         var m = new CMD();
         m.validate(function(err) {
             expect(err.errors.name).to.exist;
-            expect(err.errors.argument).to.exist;
-            expect(err.errors.timestamp).to.exist;
+            expect(err.errors.arguments).to.exist;
+            expect(err.errors.sent_timestamp).to.exist;
             expect(err.errors.user).to.exist;
             expect(err.errors.mission).to.exist;
             expect(err.errors.sent_to_satellite).to.exist;
             expect(err.errors.time).to.exist;
-            expect(err.errors.type).to.exist;
         });
     });
 
     it('should validate if all of the properties are defined with valid data types', function() {
         var m = new CMD({
             name: 'pointing',
-            timestamp:'2018-02-09T13:09:17.471Z',
-            argument:'earth',
+            sent_timestamp:1532648019811,
+            arguments:'earth',
             user:'taruni.gattu@gmail.com',
             mission:'AZero',
-            response:'success',
+            response:[],
             sent_to_satellite:true,
-            time:'040.13:09:17 UTC',
-            type:'Set'
+            time:'040.13:09:17 UTC'
         });
         m.validate(function(err){
             // expect(err).toEqual(null);
@@ -44,14 +42,13 @@ describe('Test Suite for Command Model ', function() {
 
     it('should invalidate if name is not defined', function() {
         var m = new CMD({
-            timestamp:'2018-02-09T13:09:17.471Z',
-            argument:'earth',
+            sent_timestamp:1532648019811,
+            arguments:'earth',
             user:'taruni.gattu@gmail.com',
             mission:'AZero',
-            response:'success',
+            response:[],
             sent_to_satellite:true,
-            time:'040.13:09:17 UTC',
-            type:'Set'
+            time:'040.13:09:17 UTC'
         });
         m.validate(function(err){
             expect(err.errors.name).to.exist;
@@ -59,50 +56,47 @@ describe('Test Suite for Command Model ', function() {
         });  
     });
 
-    it('should invalidate if timestamp is not defined', function() {
+    it('should invalidate if sent_timestamp is not defined', function() {
         var m = new CMD({
             name: 'pointing',
-            argument:'earth',
+            arguments:'earth',
             user:'taruni.gattu@gmail.com',
             mission:'AZero',
-            response:'success',
+            response:[],
             sent_to_satellite:true,
-            time:'040.13:09:17 UTC',
-            type:'Set'
+            time:'040.13:09:17 UTC'
         });
         m.validate(function(err){
-            expect(err.errors.timestamp).to.exist;
-            expect(err.errors.timestamp.name).to.equal('ValidatorError');
+            expect(err.errors.sent_timestamp).to.exist;
+            expect(err.errors.sent_timestamp.name).to.equal('ValidatorError');
         });  
     });
 
-    it('should invalidate if argument is not defined', function() {
+    it('should invalidate if arguments is not defined', function() {
         var m = new CMD({
             name: 'pointing',
-            timestamp:'2018-02-09T13:09:17.471Z',
+            sent_timestamp:1532648019811,
             user:'taruni.gattu@gmail.com',
             mission:'AZero',
-            response:'success',
+            response:[],
             sent_to_satellite:true,
-            time:'040.13:09:17 UTC',
-            type:'Set'
+            time:'040.13:09:17 UTC'
         });
         m.validate(function(err){
-            expect(err.errors.argument).to.exist;
-            expect(err.errors.argument.name).to.equal('ValidatorError');
+            expect(err.errors.arguments).to.exist;
+            expect(err.errors.arguments.name).to.equal('ValidatorError');
         });  
     });
 
     it('should invalidate if user is not defined', function() {
         var m = new CMD({
             name: 'pointing',
-            timestamp:'2018-02-09T13:09:17.471Z',
-            argument:'earth',
+            sent_timestamp:'2018-02-09T13:09:17.471Z',
+            arguments:'earth',
             mission:'AZero',
-            response:'success',
+            response:[],
             sent_to_satellite:true,
-            time:'040.13:09:17 UTC',
-            type:'Set'
+            time:'040.13:09:17 UTC'
         });
         m.validate(function(err){
             expect(err.errors.user).to.exist;
@@ -113,13 +107,12 @@ describe('Test Suite for Command Model ', function() {
     it('should invalidate if mission is not defined', function() {
         var m = new CMD({
             name: 'pointing',
-            timestamp:'2018-02-09T13:09:17.471Z',
-            argument:'earth',
+            sent_timestamp:1532648019811,
+            arguments:'earth',
             user:'taruni.gattu@gmail.com',
-            response:'success',
+            response:[],
             sent_to_satellite:true,
-            time:'040.13:09:17 UTC',
-            type:'Set'
+            time:'040.13:09:17 UTC'
         });
         m.validate(function(err){
             expect(err.errors.mission).to.exist;
@@ -130,14 +123,13 @@ describe('Test Suite for Command Model ', function() {
     it('should validate if response is empty as required is false', function() {
         var m = new CMD({
             name: 'pointing',
-            timestamp:'2018-02-09T13:09:17.471Z',
-            argument:'earth',
+            sent_timestamp:1532648019811,
+            arguments:'earth',
             user:'taruni.gattu@gmail.com',
             mission:'AZero',
-            response:'',
+            response:[],
             sent_to_satellite:true,
-            time:'040.13:09:17 UTC',
-            type:'Set'
+            time:'040.13:09:17 UTC'
         });
         m.validate(function(err){
             assert.isNull(err);
@@ -147,13 +139,12 @@ describe('Test Suite for Command Model ', function() {
     it('should invalidate if sent_to_satellite is not defined', function() {
         var m = new CMD({
             name: 'pointing',
-            timestamp:'2018-02-09T13:09:17.471Z',
-            argument:'earth',
+            sent_timestamp:1532648019811,
+            arguments:'earth',
             user:'taruni.gattu@gmail.com',
             mission:'AZero',
-            response:'success',
-            time:'040.13:09:17 UTC',
-            type:'Set'
+            response:[],
+            time:'040.13:09:17 UTC'
         });
         m.validate(function(err){
             expect(err.errors.sent_to_satellite).to.exist;
@@ -164,34 +155,16 @@ describe('Test Suite for Command Model ', function() {
     it('should invalidate if time is not a defined', function() {
         var m = new CMD({
             name: 'pointing',
-            timestamp:'2018-02-09T13:09:17.471Z',
-            argument:'earth',
+            sent_timestamp:1532648019811,
+            arguments:'earth',
             user:'taruni.gattu@gmail.com',
             mission:'AZero',
-            response:'success',
-            sent_to_satellite:true,
-            type:'Set'
+            response:[],
+            sent_to_satellite:true
         });
         m.validate(function(err){
             expect(err.errors.time).to.exist;
             expect(err.errors.time.name).to.equal('ValidatorError');
-        });  
-    });
-
-    it('should invalidate if type is not defined', function() {
-        var m = new CMD({
-            name: 'pointing',
-            timestamp:'2018-02-09T13:09:17.471Z',
-            argument:'earth',
-            user:'taruni.gattu@gmail.com',
-            mission:'AZero',
-            response:'success',
-            sent_to_satellite:true,
-            time:'040.13:09:17 UTC'
-        });
-        m.validate(function(err){
-            expect(err.errors.type).to.exist;
-            expect(err.errors.type.name).to.equal('ValidatorError');
         });  
     });
 
