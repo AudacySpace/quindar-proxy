@@ -44,4 +44,7 @@ require('./server/scripts/proxyAppStatus')();
 require('./server/routes/routes.js')(app);
 
 // script to read socket stream ================================================
-require('./server/scripts/socket.js')(io);
+// require('./server/scripts/socket.js')(io);
+
+// script to send and receive commands using socket stream ================================================
+require('./server/scripts/commands.js')(io);

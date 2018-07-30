@@ -7,11 +7,11 @@ var commandSchema = mongoose.Schema({
 		type : String,
 		required: true
 	},
-	argument : {
+	arguments : {
 		type : String,
 		required: true
 	},
-	timestamp : {
+	sent_timestamp : {
 		type : Date,
 		required: true
 	},
@@ -24,17 +24,13 @@ var commandSchema = mongoose.Schema({
 		required: true
 	},
 	response : {
-		type : String
+		type : Array
 	},
 	sent_to_satellite : {
 		type : Boolean,
 		required: true
 	},
 	time : {
-		type : String,
-		required: true
-	},
-	type : {
 		type : String,
 		required: true
 	}
