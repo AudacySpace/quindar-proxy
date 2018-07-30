@@ -12,7 +12,7 @@ var commandSchema = mongoose.Schema({
 		required: true
 	},
 	sent_timestamp : {
-		type : Number,
+		type : Date,
 		required: true
 	},
 	user : {
