@@ -74,18 +74,19 @@ module.exports = function(io) {
 		}, 1000);
 
 		socket.on('comm-ack', function(data){
-			if(data.metadata && data.metadata.sent_timestamp){
-				Command.findOne( {'sent_timestamp': data.metadata.sent_timestamp}, function(err, command) {
+			var commandResponse = JSON.parse(data);
+			if(commandResponse.metadata && commandResponse.metadata.sent_timestamp){
+				Command.findOne( {'sent_timestamp': commandResponse.metadata.sent_timestamp}, function(err, command) {
 	            	if(err){
 	                	console.log(err);
 	            	}
 
 	            	if(command) {
-	            		if(data.metadata.hasOwnProperty('status') && data.metadata.hasOwnProperty('data') && data.hasOwnProperty('timestamp')){
+	            		if(commandResponse.metadata.hasOwnProperty('status') && commandResponse.metadata.hasOwnProperty('data') && commandResponse.hasOwnProperty('timestamp')){
 	            			command.response.push({
-								"status":data.metadata.status,
-								"data":data.metadata.data,
-								"gwp_timestamp":data.timestamp
+								"status":commandResponse.metadata.status,
+								"data":commandResponse.metadata.data,
+								"gwp_timestamp":commandResponse.timestamp
 							});
 	            		}
 
