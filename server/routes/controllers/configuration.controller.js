@@ -5,7 +5,7 @@ var Config = require('../../model/configuration');
 module.exports = {
 	uploadFile : function(req, res){
 		parse(req,res);
-		parseCommands(req,res);
+		// parseCommands(req,res);
 		res.json({error_code:0,err_desc:null});
 	},
 
