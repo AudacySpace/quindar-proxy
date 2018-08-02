@@ -41,7 +41,7 @@ module.exports = function(io) {
 							"mission":"",
 							"timestamp":"",
 							"metadata":{},
-							"data":""
+							"command":""
 						};
 						for(var i=0; i<commands.length; i++){
 
@@ -50,7 +50,7 @@ module.exports = function(io) {
 							newcommand.timestamp = commands[i].sent_timestamp;
 							newcommand.metadata.cmd = commands[i].name;
 							newcommand.metadata.arg = commands[i].arguments;
-							newcommand.data = "";
+							newcommand.command = "";
 
 							if(clients[commands[i].mission]) {
 								var room = clients[commands[i].mission]["socket"];
@@ -85,8 +85,9 @@ module.exports = function(io) {
 	            		if(commandResponse.metadata.hasOwnProperty('status') && commandResponse.metadata.hasOwnProperty('data') && commandResponse.hasOwnProperty('timestamp')){
 	            			command.response.push({
 								"status":commandResponse.metadata.status,
-								"data":commandResponse.metadata.data,
-								"gwp_timestamp":commandResponse.timestamp
+								"metadata_data":commandResponse.metadata.data,
+								"gwp_timestamp":commandResponse.timestamp,
+								"data":commandResponse.data
 							});
 	            		}
 
