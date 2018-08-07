@@ -96,12 +96,12 @@
 		        </thead>
 		        <tbody class="details">
 			     	<tr ng-repeat="config in ctrl.configlist">
-			     	    <td>{{ config.source.name }}</td>
-			            <td>{{ config.source.ipaddress }}</td>
-			            <td>{{ config.mission }}</td>
-		                <td>{{ config.source.filename }}</td>
-		                <td><a ng-click="ctrl.showModal(config.mission,config.source.ipaddress)">
-		                		<img style="height:3%" ng-src="../../public/media/icons/attachment-vertical-paperclip.svg"/>
+			     	    <td flex="20">{{ config.source.name }}</td>
+			            <td flex="10">{{ config.source.ipaddress }}</td>
+			            <td flex="20">{{ config.mission }}</td>
+		                <td flex="25">{{ config.source.filename }}</td>
+		                <td flex="25"><a ng-click="ctrl.showModal(config.mission,config.source.ipaddress)" title="Attach Files">
+		                	<img class="aggFileIcon" ng-src="../../public/media/icons/attachment-vertical-paperclip.svg"/>
 		                	</a>
 		                </td>
 			        </tr>
