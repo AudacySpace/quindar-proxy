@@ -15,8 +15,9 @@ var io = require('socket.io').listen(app.listen(app.get('port'), function(){
 	console.log('Server listening at port %d', app.get('port'));
 }));
 
+mongoose.Promise = global.Promise;
 //Connect to the mongo database
-mongoose.connect('mongodb://127.0.0.1:27017/quindar');
+mongoose.connect('mongodb://127.0.0.1:27017/quindar', {useMongoClient : true});
 
 // CONNECTION EVENTS
 // When successfully connected
