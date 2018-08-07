@@ -26,3 +26,8 @@ body {
     filter: alpha(opacity=50);
     opacity: .5;
 }
+
+img.aggFileIcon{
+    width:25px;
+    height:25px;
+}
