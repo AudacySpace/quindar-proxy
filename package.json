@@ -26,11 +26,11 @@
     "xlsx-to-json-lc": "^0.5.0"
   },
   "engines": {
-    "node": "4.0.0"
+    "node": ">=8.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/quindar/quindar-proxy"
+    "url": "https://github.com/AudacySpace/quindar-proxy"
   },
   "keywords": [
     "node",
