@@ -85,7 +85,7 @@ module.exports = function(socket) {
 					var newTelemetry = new Object();
 					newTelemetry['mission'] = parsedData['mission'];
 					newTelemetry['source'] = configuration.source.name;
-					newTelemetry['timestamp'] = new Date(parsedData['timestamp'] * 1000);
+					newTelemetry['timestamp'] = new Date(parsedData['timestamp']);
 					var telemetry = new Object();
 
 					for (var point in parsedData['data']) {

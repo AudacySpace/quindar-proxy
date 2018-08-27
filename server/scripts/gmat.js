@@ -2,7 +2,7 @@ module.exports = function(socket) {
 
 	var math = require('mathjs');
 	var async = require('async');
-	var julian = require('julian');
+	// var julian = require('julian');
 	var Config = require('../model/configuration');
 	var Telemetry = require('../model/telemetry');
 	var Helper = require('./helper.js');
@@ -51,7 +51,7 @@ module.exports = function(socket) {
 					var newTelemetry = new Object();
 					newTelemetry['mission'] = parsedData['mission'];
 					newTelemetry['source'] = configuration.source.name;
-					newTelemetry['timestamp'] = julian.toDate(parsedData['timestamp']);
+					newTelemetry['timestamp'] = new Date(parsedData['timestamp']);
 					var telemetry = new Object();
 
 					for (var point in configuration.contents) {
@@ -64,14 +64,14 @@ module.exports = function(socket) {
 						if(configuration.contents[point].datatype == "date"){
 							try {
 								if(parsedData['data'][point] != ""){
-									parsedData['data'][point] = julian.toDate(parsedData['data'][point]);
+									parsedData['data'][point] = unix2Date(parsedData['data'][point]);
 								}
-								telemetry[point].alarm_low = julian.toDate(configuration.contents[point].alarm_low);
-								telemetry[point].alarm_high = julian.toDate(configuration.contents[point].alarm_high);
-								telemetry[point].warn_low = julian.toDate(configuration.contents[point].warn_low);
-								telemetry[point].warn_high = julian.toDate(configuration.contents[point].warn_high);
+								telemetry[point].alarm_low = unix2Date(configuration.contents[point].alarm_low);
+								telemetry[point].alarm_high = unix2Date(configuration.contents[point].alarm_high);
+								telemetry[point].warn_low = unix2Date(configuration.contents[point].warn_low);
+								telemetry[point].warn_high = unix2Date(configuration.contents[point].warn_high);
 							} catch (e) {
-								console.log("Error converting julian date: " + e);
+								console.log("Error converting unix date: " + e);
 							}
 
 						} else {
@@ -115,4 +115,12 @@ module.exports = function(socket) {
 		});		
 
 	});
+}
+
+//convert unix timestamp to javascript date
+function unix2Date(value) {
+	if(value != ""){
+		value = new Date (value * 1000);
+	}
+	return value;
 }
