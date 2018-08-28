@@ -92,6 +92,7 @@
 		                <th>Mission Name</th>
 		                <th>File Name</th>
 		                <th>Attachments</th>
+		                <th></th>
 		            </tr>
 		        </thead>
 		        <tbody class="details">
@@ -104,6 +105,7 @@
 		                	<img class="aggFileIcon" ng-src="../../public/media/icons/attachment-vertical-paperclip.svg"/>
 		                	</a>
 		                </td>
+		                <td class="itemclose" ng-click="ctrl.removeConfig(config.source.ipaddress)">&times;</td>
 			        </tr>
 			    </tbody>
 		    </table>
