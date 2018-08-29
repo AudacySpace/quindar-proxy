@@ -2,9 +2,8 @@ describe('Testing source controller', function () {
     var controller, scope, configService, deferred, $q, httpBackend;
 
     var windowMock = {
-        alert: function(message) {
-
-        }
+        alert: function(message) {},
+        confirm: function(message) {}
     };
 
     var modalInstance = { open: function() {} };
@@ -25,6 +24,7 @@ describe('Testing source controller', function () {
 
             deferred = _$q_.defer();
             spyOn(configService, "getConfig").and.returnValue(deferred.promise);
+            spyOn(configService, "removeConfig").and.returnValue(deferred.promise);
 
             controller = $controller('SourceCtrl', {
                 $scope: scope,
@@ -168,6 +168,25 @@ describe('Testing source controller', function () {
         controller.upload(mockFile);    
         httpBackend.flush();
         expect(windowMock.alert).toHaveBeenCalledWith('an error occured');
+    });
+
+    it('should remove file from list when it is deleted', function(){
+        spyOn(windowMock, 'confirm').and.returnValue(true);
+        var result = {
+            'message' : 'Configuration deleted successfully'
+        }
+
+        deferred.resolve({ data : result });
+        controller.removeConfig("100.100.100.100");
+
+        expect(configService.removeConfig).toHaveBeenCalledWith("100.100.100.100");
+    });
+
+    it('should not remove file from list when the user does not confirm to delete', function(){
+        spyOn(windowMock, 'confirm').and.returnValue(false);
+
+        controller.removeConfig("100.100.100.100");
+        expect(configService.removeConfig).not.toHaveBeenCalled();
     });
 
     it('should call showModal function on click on attachment svg', function() {

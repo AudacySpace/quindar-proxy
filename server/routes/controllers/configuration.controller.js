@@ -32,7 +32,7 @@ module.exports = {
 
             if(config){
                 config.remove();
-                res.status(200).send('Configuration deleted successfully');
+                res.json({'message' : 'Configuration deleted successfully'});
             }
         });
     }
