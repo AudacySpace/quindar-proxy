@@ -145,12 +145,14 @@ describe('Test Suite for Configuration Route Controller', function() {
         sinon.stub(CFG, 'find');
         sinon.stub(CFG,'findOne');
         sinon.stub(CFG.prototype,'save');
+        sinon.stub(CFG,'remove');
     });
 
     afterEach(function() {
         CFG.find.restore();
         CFG.findOne.restore();
         CFG.prototype.save.restore();
+        CFG.remove.restore();
     });
 
     it('should get all configurations', function() {
@@ -182,6 +184,61 @@ describe('Test Suite for Configuration Route Controller', function() {
         configCtrl.getConfig(req, res);
         sinon.assert.calledWith(CFG.find,{},{ mission: 1, source: 1 },sinon.match.func);
         expect(res.send.calledOnce).to.be.false;
+    });
+
+    it('should remove the configuration file when deleted', function() {
+        var config = {
+            "source": {
+                "filename": "Gateway.xlsx",
+                "ipaddress": "10.0.0.100",
+                "name": "Test Gateway"
+            },
+            "mission": "Test",
+            "attachments": [],
+            "contents": {},
+            save:function(callback){
+                var err = null;
+                var res = {"data":""};
+                callback(err,res);
+            },
+            remove:function(){
+
+            }
+        };
+
+        CFG.findOne.yields(null, config);
+
+        var req = {
+            body : {
+                'sourceIp' : '10.0.0.100'
+            }
+        };
+
+        var res = {
+            json : sinon.stub()
+        }
+
+        configCtrl.removeConfig(req, res);
+        sinon.assert.calledWith(CFG.findOne, {'source.ipaddress' : '10.0.0.100'}, sinon.match.func);
+        expect(res.json.calledOnce).to.be.true;
+        sinon.assert.calledWith(res.json, {'message' : 'Configuration deleted successfully'});
+    });
+
+    it('should not remove configuration files when error', function() {
+        CFG.findOne.yields({"name":"Mongo Error"}, null);
+        var req = {
+            body : {
+                'sourceIp' : '10.0.0.100'
+            }
+
+        };
+        var res = {
+            json: sinon.stub()
+        };
+
+        configCtrl.removeConfig(req, res);
+        sinon.assert.calledWith(CFG.findOne, {'source.ipaddress' : '10.0.0.100'}, sinon.match.func);
+        expect(res.json.calledOnce).to.be.false;
     });
 });
 

@@ -41,6 +41,19 @@ sourceApp
         });
     };
 
+    //Remove a configuration on the basis of source IP Address
+    vm.removeConfig = function(sourceIp) {
+        if($window.confirm('Are you sure you want to delete configuration file for source IP : ' + sourceIp + '?')){
+            configService.removeConfig(sourceIp)
+            .then(function(response) {
+                if(response.status == 200) {
+                    showConfig();
+                }
+            })
+        }
+    }
+
+    //Function to display the list of configurations
     function showConfig(){
         configService.getConfig()
         .then(function(response) {

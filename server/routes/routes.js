@@ -134,6 +134,9 @@
     //Upload the configuration file and save in the database
     app.post('/upload', upload, configCtrl.uploadFile);
 
+    //Delete the configuration file
+    app.post('/removeConfig', configCtrl.removeConfig);
+
     //Displays all the images of each mission in display sources page in a table
     app.get('/getImageList', imageCtrl.getImageList);
 

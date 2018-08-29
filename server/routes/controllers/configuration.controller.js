@@ -19,5 +19,21 @@ module.exports = {
                 res.send(config);
             }
         });
+    },
+
+    removeConfig : function(req,res){
+        var sourceIp = req.body.sourceIp;
+
+        Config.findOne({ 'source.ipaddress' : sourceIp }, function(err, config) {
+            if (err) {
+                console.log("Error finding configuration: " + err);
+                //throw err;
+            }
+
+            if(config){
+                config.remove();
+                res.json({'message' : 'Configuration deleted successfully'});
+            }
+        });
     }
 }

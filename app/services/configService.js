@@ -23,9 +23,18 @@ sourceApp
     	});
     }
 
+    function removeConfig(sourceIp) {
+        return $http({
+            url: "/removeConfig",
+            method: "POST",
+            data : { 'sourceIp' : sourceIp }
+        });
+    }
+
     return { 
         getConfig : getConfig,
         getAttachments : getAttachments,
-        removeAttachment : removeAttachment
+        removeAttachment : removeAttachment,
+        removeConfig : removeConfig
     }
 }]);

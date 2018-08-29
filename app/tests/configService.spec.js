@@ -48,6 +48,20 @@ describe('Testing configService', function () {
     	httpBackend.flush();
     });
 
+    it('should be able to delete a configuration file from list of files', function () {
+        var sourceIp = "10.0.0.16";
+
+        httpBackend.expectPOST("/removeConfig")
+            .respond(200, {message : 'Configuration deleted successfully'});
+
+        configService.removeConfig(sourceIp).then( function(response){
+            expect(response.status).toBe(200);
+            expect(response.data.message).toBe('Configuration deleted successfully');
+        });
+
+        httpBackend.flush();
+    });
+
     it('should get all the attachments for a configuration', function () {
         var configuration;
         var result = {
