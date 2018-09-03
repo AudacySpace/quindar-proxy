@@ -120,10 +120,8 @@ describe('Testing source controller', function () {
         };
 
         var response = {
-            data : {
-                status : "ok",
-                message : "Configuration data saved successfully for 10.0.0.14"
-            }
+            status : "ok",
+            message : "Configuration data saved successfully for 10.0.0.14"
         }
 
         var mockFile = {
@@ -151,10 +149,8 @@ describe('Testing source controller', function () {
         };
 
         var response = {
-            data : {
-                status : "error",
-                message : "Invalid File"
-            }
+            status : "error",
+            message : "Invalid File"
         }
 
         var mockFile = {
