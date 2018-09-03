@@ -4,9 +4,14 @@ var Config = require('../../model/configuration');
 
 module.exports = {
 	uploadFile : function(req, res){
-		parse(req,res);
+		parse(req,res,function(status, message){
+            if(status == 1){
+                res.json({ status : "error" , message : message });
+            } else if(status == 0){
+                res.json({ status : "ok" , message : message, result : null });
+            }
+        });
 		// parseCommands(req,res);
-		res.json({error_code:0,err_desc:null});
 	},
 
 	getConfig : function(req,res){
