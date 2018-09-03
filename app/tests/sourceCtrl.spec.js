@@ -120,14 +120,8 @@ describe('Testing source controller', function () {
         };
 
         var response = {
-            config: {
-                data: {
-                    file:{
-                        name: 'SIM.xlsx'
-                    }
-                }
-            },
-            error_code : 0
+            status : "ok",
+            message : "Configuration data saved successfully for 10.0.0.14"
         }
 
         var mockFile = {
@@ -140,11 +134,11 @@ describe('Testing source controller', function () {
         controller.upload(mockFile);    
         httpBackend.flush();
 
-        expect(windowMock.alert).toHaveBeenCalledWith('Success: SIM.xlsx uploaded.');
+        expect(windowMock.alert).toHaveBeenCalledWith('Configuration data saved successfully for 10.0.0.14');
         expect(controller.config).toEqual({});
     });
 
-    it('should alert user on upload file error', function(){
+    it('should alert user on upload file error(invalid file)', function(){
         controller.config = {
             file: {
                 name :  "SIM.xlsx"
@@ -155,7 +149,8 @@ describe('Testing source controller', function () {
         };
 
         var response = {
-            error_code : 1
+            status : "error",
+            message : "Invalid File"
         }
 
         var mockFile = {
@@ -167,7 +162,7 @@ describe('Testing source controller', function () {
         httpBackend.when('POST', '/upload').respond(200, response);
         controller.upload(mockFile);    
         httpBackend.flush();
-        expect(windowMock.alert).toHaveBeenCalledWith('an error occured');
+        expect(windowMock.alert).toHaveBeenCalledWith('Invalid File');
     });
 
     it('should remove file from list when it is deleted', function(){

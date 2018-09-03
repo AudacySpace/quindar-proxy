@@ -24,17 +24,17 @@ sourceApp
                 sourceip : vm.config.sourceip,
                 mission : vm.config.mission
             } 
-        }).then(function (resp) { 
+        }).then(function (resp) {
             //validate success
-            if(resp.data.error_code === 0){ 
+            if(resp.data.status === "ok"){ //file uploaded
                 showConfig();
-                $window.alert('Success: ' + resp.config.data.file.name + ' uploaded.');
+                $window.alert(resp.data.message);
 
                 //reset the input fields on the form
                 vm.config = {};
                 vm.upload_form.$setPristine();
-            } else {
-                $window.alert('an error occured');
+            } else { //error in file contents
+                $window.alert(resp.data.message);
             }
         }, function (resp) { //catch error
             $window.alert('Error status: ' + resp.status);
