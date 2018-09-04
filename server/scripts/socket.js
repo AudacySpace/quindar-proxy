@@ -1,21 +1,17 @@
 module.exports = function(io) {
 
-	// var math = require('mathjs');
-	// var Config = require('../model/configuration');
-	// var Telemetry = require('../model/telemetry');
 	var Command = require('../model/command');
 	var source = "";
-	// var configuration = new Config();
-	var newcommand = {};
 	var clients = {};
 	var missionConfig = require('../config/mission');
 
 	//Listen to the GMAT server streaming data
 	io.on('connection', function(socket){
-		console.log('socket.io server connected.');
+		console.log('socket server connected');
 
 		//add clients socket id using mission name
 		socket.on('add-mission', function(data){
+			console.log("Started mission: " + data.mission);
 			clients[data.mission] = {
 				"socket" : socket.id
 			}
@@ -24,7 +20,9 @@ module.exports = function(io) {
 			missionLib(socket);
 		});
 
-		socket.on('disconnect', function(){
+		socket.on('disconnect', function(reason){
+			console.log("socket disconnected due to: " + reason);
+			socket.disconnect(true);
 			for(var client in clients){
 		        if(clients[client]["socket"] == socket.id){
 					delete clients[client];
@@ -42,10 +40,19 @@ module.exports = function(io) {
 	            if(commands) {
 		            if(commands.length>0) {
 						for(var i=0; i<commands.length; i++){
-							newcommand.name = commands[i].name.toLowerCase();
-							newcommand.argument = commands[i].argument.toLowerCase();
-							newcommand.type = commands[i].type.toLowerCase();
-							newcommand.timestamp = commands[i].timestamp;
+							var newcommand = {
+								"mission":"",
+								"timestamp":"",
+								"metadata":{},
+								"command":""
+							};
+
+							//set the json object to be sent to the. source
+							newcommand.mission = commands[i].mission;
+							newcommand.timestamp = commands[i].sent_timestamp;
+							newcommand.metadata.cmd = commands[i].name;
+							newcommand.metadata.arg = commands[i].arguments;
+							newcommand.command = "";
 
 							if(clients[commands[i].mission]) {
 								var room = clients[commands[i].mission]["socket"];
@@ -69,23 +76,33 @@ module.exports = function(io) {
 		}, 1000);
 
 		socket.on('comm-ack', function(data){
-			Command.findOne( {'timestamp': data.timestamp}, function(err, command) {
-	            if(err){
-	                console.log(err);
-	            }
+			var commandResponse = JSON.parse(data);
+			if(commandResponse.metadata && commandResponse.metadata.sent_timestamp){
+				Command.findOne( {'sent_timestamp': commandResponse.metadata.sent_timestamp}, function(err, command) {
+					if(err){
+						console.log(err);
+					}
 
-	            if(command) {
-					command.response = data.response;
-
-					command.save(function(err,result){
-						if(err){
-							console.log(err);
+					if(command) {
+						if(commandResponse.metadata.hasOwnProperty('status') && commandResponse.metadata.hasOwnProperty('data') && commandResponse.hasOwnProperty('timestamp')){
+							command.response.push({
+								"status":commandResponse.metadata.status,
+								"metadata_data":commandResponse.metadata.data,
+								"gwp_timestamp":commandResponse.timestamp,
+								"data":commandResponse.data
+							});
 						}
 
-						console.log("Response added for the command");
-					})
-				}
-			})
+						command.save(function(err,result){
+							if(err){
+								console.log(err);
+							}
+							console.log("Response added for the command");
+						})
+					}
+				})
+			}
+
 		});
 	});
 }
