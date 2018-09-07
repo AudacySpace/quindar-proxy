@@ -256,9 +256,8 @@ describe('Test Suite for Timeline Route Controller', function() {
         };
 
         timelineCtrl.saveTimeline(req, res);
-        sinon.assert.calledWith(TIM.findOne,{'mission' : 'AZero'},sinon.match.func);
         expect(res.json.calledOnce).to.be.true;
-        sinon.assert.calledWith(res.json, {error_code:1,err_desc:"No excel data"});
+        sinon.assert.calledWith(res.json, { message: "Invalid files: Sheet1/Sheet2 is empty", status: "error" });
     });
 
     it('should save the timeline file to database when uploaded', function() {
@@ -275,7 +274,7 @@ describe('Test Suite for Timeline Route Controller', function() {
                 encoding: '7bit',
                 mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 destination: './server/routes/files/',
-                filename: 'Timeline.xlsx',
+                filename: 'timeline-2.xlsx',
                 path: './server/routes/files/timeline-2.xlsx',
                 size: 18320
             }
@@ -286,8 +285,7 @@ describe('Test Suite for Timeline Route Controller', function() {
 
         timelineCtrl.saveTimeline(req, res);
         sinon.assert.calledWith(TIM.findOne,{'mission' : 'AZero'},sinon.match.func);
-        expect(res.json.calledOnce).to.be.true;
-        sinon.assert.calledWith(res.json, {error_code:0,err_desc:null});
+        sinon.assert.calledOnce(TIM.prototype.save);
     });
 
 });

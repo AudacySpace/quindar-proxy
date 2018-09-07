@@ -174,14 +174,16 @@ describe('Test Suite for SystemMap Route Controller', function() {
             },
             markModified:function(field){
 
-            }
+            },
+            remove: function(){}
         };
 
         IMG.findOne.yields(null, imageData);
 
         var req = {
             body : {
-                'mission' : 'AZero'
+                'mission' : 'AZero',
+                'imageid' : 'PowerSystem'
             }
         };
         var res = {

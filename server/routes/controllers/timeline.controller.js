@@ -16,6 +16,13 @@ module.exports = {
                     "workbook":workbook
                 }
 
+                if(sheets.sheet1.length == 0 || sheets.sheet2.length == 0){
+                    return res.json({
+                        status : "error",
+                        message : "Invalid files: Sheet1/Sheet2 is empty"
+                    });
+                }
+
                 for(var i=0;i<sheet1.length;i++){
                     newgroupContents.push({"eventname":sheet1[i].eventname,"eventdata":[],"eventgroup":sheet1[i].eventgroup,"eventinfo":sheet1[i].eventinfo}); 
                 }
@@ -48,7 +55,7 @@ module.exports = {
 
                 Timeline.findOne({'mission' : req.body.mission }, function(err, docmaps) {
                     if(err){
-                        console.log(err);
+                        return res.json({ status : "error" , message : err });
                     }
 
                     if(docmaps){
@@ -58,9 +65,18 @@ module.exports = {
                         docmaps.markModified('file');
                         docmaps.markModified('filename');
                         docmaps.markModified('events');
+
                         docmaps.save(function(err) {
-                        if (err) throw err;
-                            console.log(' Timeline data updated successfully for ' + req.body.mission);
+                            if (err) {
+                                return res.json({
+                                    status : "error",
+                                    message : "Error updating timeline data for " + req.body.mission
+                                });
+                            }
+                            return res.json({
+                                status : "ok",
+                                message : "Timeline data updated successfully for " + req.body.mission
+                            });
                         });                    
                     }else {
                         //create a new document if not document exists
@@ -73,23 +89,25 @@ module.exports = {
                         }
                         timeline.save(function(err,result){
                             if(err){
-                                console.log(err);
+                                return res.json({
+                                    status : "error",
+                                    message : "Error saving timeline data for " + req.body.mission
+                                });
                             }
                             if(result){
-                                console.log('Timeline data saved successfully for ' + req.body.mission);
+                                return res.json({
+                                    status : "ok",
+                                    message : "Timeline data saved successfully for " + req.body.mission
+                                });
                             }
                         });
                     }
                 });
-
-                if(sheets.sheet1.length > 0 && sheets.sheet2.length > 0){
-                    res.json({error_code:0,err_desc:null});
-                }else {
-                    res.json({error_code:1,err_desc:"No excel data"});
-                }
-                
             } catch (e){
-                res.json({error_code:1,err_desc:"Corupted excel file"});
+                return res.json({
+                    status : "error",
+                    message : "Corrupted excel file"
+                });
             }
     },
 

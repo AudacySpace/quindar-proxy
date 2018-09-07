@@ -3,6 +3,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var server = require('http').createServer(app);
 var mongoose = require('mongoose');
+mongoose.plugin(schema => { schema.options.usePushEach = true });
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -17,7 +18,7 @@ var io = require('socket.io').listen(app.listen(app.get('port'), function(){
 
 mongoose.Promise = global.Promise;
 //Connect to the mongo database
-mongoose.connect('mongodb://127.0.0.1:27017/quindar', {useMongoClient : true});
+mongoose.connect('mongodb://54.184.232.90:27017/quindar', {useMongoClient : true});
 
 // CONNECTION EVENTS
 // When successfully connected

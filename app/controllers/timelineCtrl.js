@@ -32,15 +32,15 @@ sourceApp
         }).then(function (resp) { 
 
             //validate success
-            if(resp.data.error_code === 0){
+            if(resp.data.status === "ok"){
                 showList();
-                $window.alert('Success: ' + resp.config.data.filename +' for mission ' + resp.config.data.mission +' is uploaded.');
+                $window.alert(resp.data.message);
                 //reset the input fields on the form
                 vm.uploads = {};
                 vm.timelinedataupload_form.$setPristine();
             }
             else {
-                $window.alert('an error occured');
+                $window.alert(resp.data.message);
             }
               
         }, function (resp) { //catch error

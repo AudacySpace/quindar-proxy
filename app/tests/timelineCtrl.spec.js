@@ -183,13 +183,8 @@ describe('Testing timeline controller', function () {
         };
 
         var response = {
-            config: {
-                data: {
-                    filename: "Timeline",
-                    mission: "ATest"
-                }
-            },
-            error_code : 0
+            status : "ok",
+            message : "Timeline data saved successfully for ATest"
         }
 
 
@@ -197,7 +192,7 @@ describe('Testing timeline controller', function () {
         controller.uploadTimelineData();    
         httpBackend.flush();
 
-        expect(windowMock.alert).toHaveBeenCalledWith('Success: Timeline for mission ATest is uploaded.');
+        expect(windowMock.alert).toHaveBeenCalledWith('Timeline data saved successfully for ATest');
         expect(controller.uploads).toEqual({});
     });
 
@@ -256,14 +251,8 @@ describe('Testing timeline controller', function () {
         };
 
         var response = {
-            config: {
-                data: {
-                    filename: "Timeline",
-                    mission: "ATest"
-                }
-            },
-            error_code : 1,
-            err_desc : "XYZ reason"
+            status: "error",
+            message: "Invalid files: Sheet1/Sheet2 is empty"
         }
 
 
@@ -271,7 +260,7 @@ describe('Testing timeline controller', function () {
         controller.uploadTimelineData();    
         httpBackend.flush();
 
-        expect(windowMock.alert).toHaveBeenCalledWith('an error occured');
+        expect(windowMock.alert).toHaveBeenCalledWith('Invalid files: Sheet1/Sheet2 is empty');
     });
 
     it('should remove timeline from timelinelist when removeTimeline() is called', function(){

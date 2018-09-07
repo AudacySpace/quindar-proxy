@@ -99,11 +99,15 @@ module.exports = {
                     }
                 }
 
-                mapdata.markModified('uploadedfiles');
-                mapdata.save(function(err) {
-                    if (err) throw err;
-                    console.log(' The image map:' + imageid +' for ' +req.body.mission + 'is deleted.');
-                }); 
+                if(mapdata.uploadedfiles.length == 0){
+                    mapdata.remove();
+                } else {
+                    mapdata.markModified('uploadedfiles');
+                    mapdata.save(function(err) {
+                        if (err) throw err;
+                        console.log(' The image map:' + imageid +' for ' +req.body.mission + ' is deleted.');
+                    });
+                }
                 res.json({error_code:0,err_desc:null});
             }
         });

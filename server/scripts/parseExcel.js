@@ -61,7 +61,7 @@ module.exports = function(req,res,cb){
 
 				Config.findOne({ 'source.ipaddress' : req.body.sourceip }, function(err, config) {
                     if (err)
-                        cb(1, "Error finding configurations in DB: " + err);
+                        return cb(1, "Error finding configurations in DB: " + err);
 
                     if (config) {
                     	// if there is an existing configuration for source, update it
@@ -72,7 +72,7 @@ module.exports = function(req,res,cb){
 
                     	config.save(function(err) {
 							if (err) {
-								cb(1, "Error saving configuration file for " + req.body.sourceip);
+								return cb(1, "Error saving configuration file for " + req.body.sourceip);
 							}
 							cb(0, 'Configuration data updated successfully for ' + req.body.sourceip);
 						});
@@ -86,7 +86,7 @@ module.exports = function(req,res,cb){
 
 						newConfig.save(function(err) {
 							if (err) {
-								cb(1, "Error saving configuration file for " + req.body.sourceip);
+								return cb(1, "Error saving configuration file for " + req.body.sourceip);
 							}
 
 							cb(0, 'Configuration data saved successfully for ' + req.body.sourceip);
@@ -96,7 +96,7 @@ module.exports = function(req,res,cb){
 			}
 		});
 	} catch(e) {
-		cb(1, "Corrupted excel file at : " + filepath);
+		return cb(1, "Corrupted excel file at : " + filepath);
 	}
 
 };
