@@ -52,7 +52,8 @@
 			        			<span ng-show="ctrl.timelinedataupload_form.filename.$error.required && !ctrl.timelinedataupload_form.filename.$pristine">This field is required!</span>
 			        		</td>
 			        		<td>
-								<select ng-model="ctrl.uploads.missionName" ng-options="x for x in ctrl.missionNames" class="form-control">
+								<select ng-model="ctrl.uploads.missionName" name="missionName" ng-options="x for x in ctrl.missionNames" class="form-control" required>
+									<option value="">Select Mission</option>
 								</select>
 			        			<span ng-show="ctrl.timelinedataupload_form.missionName.$error.required && !ctrl.timelinedataupload_form.missionName.$pristine">This field is required!</span>
 			        		<td>

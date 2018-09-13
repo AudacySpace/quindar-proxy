@@ -33,7 +33,7 @@
 	</head>
 	<body ng-app="sourceApp" ng-controller="ImageCtrl as ctrl">
 		<div class="container form">
-			<center><h2>Display Sources</h2></center>
+			<center><h2>System Images</h2></center>
 	    	<form name="ctrl.imageupload_form" enctype="multipart/form-data">
 	    		<table class="table table-hover">
 	    			<thead>
@@ -52,7 +52,8 @@
 			        			<span ng-show="ctrl.imageupload_form.imagename.$error.required && !ctrl.imageupload_form.imagename.$pristine">This field is required!</span>
 			        		</td>
 			        		<td>
-								<select ng-model="ctrl.uploads.selectedName" ng-options="x for x in ctrl.missionNames" class="form-control">
+								<select ng-model="ctrl.uploads.selectedName" name="selectedName" ng-options="x for x in ctrl.missionNames" class="form-control" required>
+									<option value="">Select Mission</option>
 								</select>
 			        			<span ng-show="ctrl.imageupload_form.selectedName.$error.required && !ctrl.imageupload_form.selectedName.$pristine">This field is required!</span>
 			        		</td>
