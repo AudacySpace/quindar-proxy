@@ -19,14 +19,14 @@ describe('Testing index controller', function () {
         expect(controller).toBeDefined();
     });
 
-    it('should define default source as adminMongo', function(){
+    it('should define default source as sources', function(){
         expect(scope.source).toBeDefined();
-        expect(scope.source).toEqual('/adminMongo');
+        expect(scope.source).toEqual('/sources');
     })
 
-    it('should define the number of tabs (6) on the web page', function(){
+    it('should define the number of tabs (5) on the web page', function(){
         expect(scope.tabs).toBeDefined();
-        expect(scope.tabs.length).toEqual(6);
+        expect(scope.tabs.length).toEqual(5);
     })
 
     it('should define the function changeSource()', function(){
