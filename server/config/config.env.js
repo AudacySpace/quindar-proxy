@@ -10,7 +10,7 @@ try{
 module.exports = function(){
     if(isEmpty(config)){
         //default values if configuration not present
-        return {
+        return { // mongodb://<hostname>:<port>/<database-name>
             'databaseURL' : 'mongodb://localhost:27017/quindar'
         };
     } else {
