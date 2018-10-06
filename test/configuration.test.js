@@ -155,6 +155,7 @@ describe('Test Suite for Configuration Model ', function() {
 
             },
             mission: 'Azero',
+            simulated: false,
             contents : {}
         });
         m.validate(function(err){
