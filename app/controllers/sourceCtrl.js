@@ -16,13 +16,20 @@ sourceApp
     }
 
     vm.upload = function(file) {
+        if(vm.config.simulated == "yes") {
+            vm.config.simulated = true;
+        } else if (vm.config.simulated == "no") {
+            vm.config.simulated = false;
+        }
+
         Upload.upload({
             url: '/upload', 
             data: { 
                 file : file, 
                 sourcename : vm.config.sourcename, 
                 sourceip : vm.config.sourceip,
-                mission : vm.config.mission
+                mission : vm.config.mission,
+                simulated : vm.config.simulated
             } 
         }).then(function (resp) {
             //validate success

@@ -23,6 +23,10 @@ var configSchema = mongoose.Schema({
 		type : String,
 		required: true
 	},
+	simulated : {
+		type : Boolean,
+		required : true
+	},
 	attachments : {
 		type : Array
 	}
