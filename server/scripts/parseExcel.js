@@ -69,6 +69,7 @@ module.exports = function(req,res,cb){
                     	config.source.name = req.body.sourcename;
                     	config.source.filename = req.file.originalname;
                     	config.mission = req.body.mission;
+						config.simulated = req.body.simulated;
 
                     	config.save(function(err) {
 							if (err) {
@@ -83,6 +84,7 @@ module.exports = function(req,res,cb){
 			  			newConfig.source.ipaddress = req.body.sourceip;
 			  			newConfig.source.filename = req.file.originalname;
 			  			newConfig.mission = req.body.mission;
+						newConfig.simulated = req.body.simulated;
 
 						newConfig.save(function(err) {
 							if (err) {

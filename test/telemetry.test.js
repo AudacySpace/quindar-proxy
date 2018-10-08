@@ -20,14 +20,14 @@ describe('Test Suite for Telemetry Model ', function() {
     });
 
     it('should validate mission is a valid string type and telemetry is an object type and timestamp is date type', function() {
-        var m = new TM({mission: 'AZero',timestamp:'2018-02-01T09:42:01.287Z',telemetry:{}, source: "Julia"});
+        var m = new TM({mission: 'AZero',timestamp:'2018-02-01T09:42:01.287Z',telemetry:{}, source: "Julia", createdDate:'2018-02-01T09:42:01.287Z'});
         m.validate(function(err){
             assert.isNull(err);
         });  
     });
 
     it('should invalidate when mission is not a string type', function () {
-        var m = new TM({mission: {},timestamp:'2018-02-01T09:42:01.287Z',telemetry:{}, source: "Julia"});
+        var m = new TM({mission: {},timestamp:'2018-02-01T09:42:01.287Z',telemetry:{}, source: "Julia", createdDate:'2018-02-01T09:42:01.287Z'});
         m.validate(function(err) {
             expect(err.errors.mission).to.exist;
             expect(err.errors.mission.name).to.equal('CastError');
@@ -35,7 +35,7 @@ describe('Test Suite for Telemetry Model ', function() {
     });
 
     it('should invalidate when timestamp is not defined', function () {
-        var m = new TM({mission: 'AZero',telemetry:{}, source: "Julia"});
+        var m = new TM({mission: 'AZero',telemetry:{}, source: "Julia", createdDate:'2018-02-01T09:42:01.287Z'});
         m.validate(function(err) {
             expect(err.errors.timestamp).to.exist;
             expect(err.errors.timestamp.name).to.equal('ValidatorError');
@@ -43,7 +43,7 @@ describe('Test Suite for Telemetry Model ', function() {
     });
 
     it('should invalidate when telemetry is not defined', function () {
-        var m = new TM({mission: 'AZero',timestamp:'2018-02-01T09:42:01.287Z', source: "Julia"});
+        var m = new TM({mission: 'AZero',timestamp:'2018-02-01T09:42:01.287Z', source: "Julia", createdDate:'2018-02-01T09:42:01.287Z'});
         m.validate(function(err) {
             expect(err.errors.telemetry).to.exist;
             expect(err.errors.telemetry.name).to.equal('ValidatorError');
@@ -51,10 +51,18 @@ describe('Test Suite for Telemetry Model ', function() {
     });
 
     it('should invalidate when source is not defined', function () {
-        var m = new TM({mission: 'AZero',timestamp:'2018-02-01T09:42:01.287Z', telemetry:{}});
+        var m = new TM({mission: 'AZero',timestamp:'2018-02-01T09:42:01.287Z', telemetry:{}, createdDate:'2018-02-01T09:42:01.287Z'});
         m.validate(function(err) {
             expect(err.errors.source).to.exist;
             expect(err.errors.source.name).to.equal('ValidatorError');
+        });
+    });
+
+    it('should invalidate when createdDate is not defined', function () {
+        var m = new TM({mission: 'AZero',timestamp:'2018-02-01T09:42:01.287Z', telemetry:{}, source: "Julia"});
+        m.validate(function(err) {
+            expect(err.errors.createdDate).to.exist;
+            expect(err.errors.createdDate.name).to.equal('ValidatorError');
         });
     });
 

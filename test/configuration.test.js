@@ -32,6 +32,7 @@ describe('Test Suite for Configuration Model ', function() {
             },
             contents : {},
             mission: 'Azero',
+            simulated: false,
             attachments : []
         });
         m.validate(function(err){
@@ -48,6 +49,7 @@ describe('Test Suite for Configuration Model ', function() {
 
             },
             contents : {},
+            simulated: false,
             mission: 'Azero'
         });
         m.validate(function(err){
@@ -66,6 +68,7 @@ describe('Test Suite for Configuration Model ', function() {
 
             },
             contents : {},
+            simulated: false,
             mission: 'Azero'
         });
         m.validate(function(err){
@@ -83,6 +86,7 @@ describe('Test Suite for Configuration Model ', function() {
 
             },
             contents : {},
+            simulated: false,
             mission: 'Azero'
         });
         m.validate(function(err){
@@ -99,6 +103,7 @@ describe('Test Suite for Configuration Model ', function() {
                 filename:'SIM.xlsx' ,
 
             },
+            simulated: false,
             mission: 'Azero'
         });
         m.validate(function(err){
@@ -114,12 +119,31 @@ describe('Test Suite for Configuration Model ', function() {
                 filename:'SIM.xlsx' ,
 
             },
+            simulated: false,
             contents : {}
         });
         m.validate(function(err){
             expect(err.errors.mission.name).to.exist;
             expect(err.errors.mission.name).to.equal('ValidatorError');
         });  
+    });
+
+    it('should invalidate if simulated property is not defined', function() {
+        var m = new CFG({
+            source : {
+                name : 'Julia',
+                ipaddress: '34.209.90.133',
+                filename:'SIM.xlsx' ,
+
+            },
+            contents : {},
+            mission: 'Azero',
+            attachments : []
+        });
+        m.validate(function(err){
+            expect(err.errors.simulated.name).to.exist;
+            expect(err.errors.simulated.name).to.equal('ValidatorError');
+        });
     });
 
     it('should validate if attachments is not defined', function() {
@@ -131,6 +155,7 @@ describe('Test Suite for Configuration Model ', function() {
 
             },
             mission: 'Azero',
+            simulated: false,
             contents : {}
         });
         m.validate(function(err){
@@ -166,7 +191,7 @@ describe('Test Suite for Configuration Route Controller', function() {
         };
 
         configCtrl.getConfig(req, res);
-        sinon.assert.calledWith(CFG.find,{},{ mission: 1, source: 1 },sinon.match.func);
+        sinon.assert.calledWith(CFG.find,{},{ mission: 1, source: 1, simulated: 1 },sinon.match.func);
         expect(res.send.calledOnce).to.be.true;
         sinon.assert.calledWith(res.send, {"data":"100","status":200});
     });
@@ -182,7 +207,7 @@ describe('Test Suite for Configuration Route Controller', function() {
         };
 
         configCtrl.getConfig(req, res);
-        sinon.assert.calledWith(CFG.find,{},{ mission: 1, source: 1 },sinon.match.func);
+        sinon.assert.calledWith(CFG.find,{},{ mission: 1, source: 1, simulated: 1 },sinon.match.func);
         expect(res.send.calledOnce).to.be.false;
     });
 

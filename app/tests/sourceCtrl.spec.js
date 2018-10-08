@@ -49,6 +49,7 @@ describe('Testing source controller', function () {
     it('should call the service to get configuration list', function() {
         var result = [{
             mission: "ATest",
+            simulated: true,
             source: {
                 filename: "GMAT-6.xlsx",
                 ipaddress: "10.0.0.16",
@@ -67,7 +68,7 @@ describe('Testing source controller', function () {
 
     it('should call the upload function when upload form is valid', function(){
         var args = {
-            name :  "SIM.xlsx"
+            name: "SIM.xlsx"
         };
 
         controller.upload_form = {
@@ -76,11 +77,12 @@ describe('Testing source controller', function () {
 
         controller.config = {
             file: {
-                name :  "SIM.xlsx"
+                name: "SIM.xlsx"
             },
             mission: "ATest",
-            sourceip :  "10.0.0.14" ,
-            sourcename :  "GMAT" 
+            sourceip: "10.0.0.14",
+            sourcename: "GMAT",
+            simulated : true
         };
 
         spyOn(controller, "upload");
@@ -97,8 +99,9 @@ describe('Testing source controller', function () {
 
         controller.config = {
             mission: "ATest",
-            sourceip :  "10.0.0.14" ,
-            sourcename :  "GMAT" 
+            sourceip: "10.0.0.14",
+            sourcename: "GMAT",
+            simulated: true
         }
 
         controller.submit();
@@ -112,11 +115,12 @@ describe('Testing source controller', function () {
         };
         controller.config = {
             file: {
-                name :  "SIM.xlsx"
+                name: "SIM.xlsx"
             },
             mission: "ATest",
-            sourceip :  "10.0.0.14" ,
-            sourcename :  "GMAT" 
+            sourceip: "10.0.0.14",
+            sourcename: "GMAT",
+            simulated: true
         };
 
         var response = {
@@ -141,11 +145,12 @@ describe('Testing source controller', function () {
     it('should alert user on upload file error(invalid file)', function(){
         controller.config = {
             file: {
-                name :  "SIM.xlsx"
+                name: "SIM.xlsx"
             },
             mission: "ATest",
-            sourceip :  "10.0.0.14" ,
-            sourcename :  "GMAT" 
+            sourceip: "10.0.0.14",
+            sourcename: "GMAT",
+            simulated: true
         };
 
         var response = {

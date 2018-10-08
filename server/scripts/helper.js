@@ -26,6 +26,7 @@ module.exports = {
 				mergedTelemetry['source'] = tempTelemetry.source;
 				mergedTelemetry['timestamp'] = tempTelemetry.timestamp;
 				mergedTelemetry['telemetry'] = tempTelemetry.telemetry;
+				mergedTelemetry['createdDate'] = new Date();
 
 				mergedTelemetry.save(function(err) { 
 					if (err) {
