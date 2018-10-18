@@ -5,6 +5,7 @@ try{
     config = require('./config.env');
 } catch(e) {
     config = {};
+    console.log("Error opening configuration file: " + e)
 }
 
 module.exports = function(){
