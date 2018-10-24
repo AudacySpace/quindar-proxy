@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <meta name="description" content="">
+	    <meta name="author" content="qsvr.quindar.space">
+	    <title>Quindar Proxy</title>
+
+	    <!-- Bootstrap Core CSS -->
+	    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+	    <!-- Custom CSS -->
+	    <link href="/css/quindar-proxy.css" rel="stylesheet">
+
+	    <!-- Angular Scripts and file upload dependencies -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+		<script type="text/javascript" src="/scripts/ng-file-upload.min.js"></script>
+	    <script type="text/javascript" src="/scripts/ng-file-upload-shim.min.js"></script>
+
+	   <script src="/scripts/ui-bootstrap-tpls.js"></script>
+
+	    <!-- AngularJS Material Dependencies -->
+    	<script src="/scripts/angular-animate.min.js"></script>
+
+	    <!-- Angular module -->
+		<script src="/app.js"></script>
+		<script src="/controllers/imageCtrl.js"></script>
+		<script src="/services/configService.js"></script>
+		<script src="/services/imageService.js"></script>
+
+	</head>
+	<body ng-app="sourceApp" ng-controller="ImageCtrl as ctrl">
+		<div class="container form">
+			<center><h2>System Images</h2></center>
+	    	<form name="ctrl.imageupload_form" enctype="multipart/form-data">
+	    		<table class="table table-hover">
+	    			<thead>
+			            <tr>
+			                <th>Image Name</th>
+			                <th>Mission Name</th>
+			                <th>Image</th>
+			                <th>Contents</th>
+			            </tr>
+			        </thead>
+			        <tbody class="details">
+			        	<tr>
+			        		<td>
+			        			<input type="text" name="imagename" ng-pattern="/^[a-zA-Z0-9]*$/" class="form-control" ng-model="ctrl.uploads.imagename" required>
+			        			<span ng-show="ctrl.imageupload_form.imagename.$invalid && !ctrl.imageupload_form.imagename.$pristine && !ctrl.imageupload_form.imagename.$error.required">No special characters!</span>
+			        			<span ng-show="ctrl.imageupload_form.imagename.$error.required && !ctrl.imageupload_form.imagename.$pristine">This field is required!</span>
+			        		</td>
+			        		<td>
+								<select ng-model="ctrl.uploads.selectedName" name="selectedName" ng-options="x for x in ctrl.missionNames" class="form-control" required>
+									<option value="">Select Mission</option>
+								</select>
+			        			<span ng-show="ctrl.imageupload_form.selectedName.$error.required && !ctrl.imageupload_form.selectedName.$pristine">This field is required!</span>
+			        		</td>
+			        		<td>
+			        			<div class="input-group">
+			        				<label class="input-group-btn">
+			        					<span class="btn btn-primary">
+			        						Browse 
+			        						<input type="file" id="imagefile" ngf-select ng-model="ctrl.uploads.image" name="image" 
+			        						ngf-pattern="'.jpg'" accept=".jpg" ngf-max-size="10MB" style="display: none;">
+			                    		</span>
+		               				</label>
+		                			<input type="text" class="form-control" value="{{ ctrl.uploads.image.name }}" readonly>
+		            			</div>
+		            			<span ng-show="ctrl.imageupload_form.image.$error.pattern">Not a valid jpg image!</span>
+		            		</td>
+			        		<td>
+			        			<div class="input-group">
+			        				<label class="input-group-btn">
+			        					<span class="btn btn-primary">
+			        						Browse 
+			        						<input type="file" id="contentsfile" ngf-select ng-model="ctrl.uploads.contents" name="contents" 
+			        						ngf-pattern="'.json'" accept=".json" ngf-max-size="1MB" style="display: none;">
+			                    		</span>
+		               				</label>
+		                			<input type="text" class="form-control" value="{{ ctrl.uploads.contents.name }}" readonly>
+		            			</div>
+		            			<span ng-show="ctrl.imageupload_form.contents.$error.pattern">Not a valid json file!</span>
+		            		</td>
+		            		<td>
+			                   	<input type="submit" ng-click="ctrl.submit()" class="btn btn-primary upload" value="Add">
+			                </td>
+			            </tr>
+			        </tbody>
+		    	</table>
+		  	</form>
+		</div>
+
+		<div class="container list">
+			<table class="table table-hover">
+	    		<thead>
+			        <tr>
+			            <th>Image Name</th>
+			            <th>Mission Name</th>
+			            <th>Image</th>
+			            <th>Contents</th>
+			            <th></th>
+		            </tr>
+		        </thead>
+		        <tbody class="details">
+			     	<tr ng-repeat="item in ctrl.imagelist">
+			     	    <td>{{ item.imageid }}</td>
+			            <td>{{ item.mission }}</td>
+		                <td>{{ item.imagefile }}</td>
+		                <td>{{ item.contentsfile }}</td>
+		                <td class="itemclose" ng-click="ctrl.removeImage(item.imageid,item.mission)">&times;</td>
+			        </tr>
+			    </tbody>
+		    </table>
+		</div>
+
+		<!-- jQuery -->
+	    <script src="/scripts/jquery.js"></script>
+
+	    <!-- Bootstrap Core JavaScript -->
+	    <script src="/scripts/bootstrap.min.js"></script>
+
+	</body>
+</html>

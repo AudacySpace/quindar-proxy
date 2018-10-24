@@ -13,11 +13,16 @@
 
 	    <!-- Custom CSS -->
 	    <link href="/css/quindar-proxy.css" rel="stylesheet">
+	    <link href="/css/modalStyles.css" rel="stylesheet">
 
 	    <!-- Angular Scripts and file upload dependencies -->
 	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
 		<script type="text/javascript" src="/scripts/ng-file-upload.min.js"></script>
 	    <script type="text/javascript" src="/scripts/ng-file-upload-shim.min.js"></script>
+	    <script src="/scripts/ui-bootstrap-tpls.js"></script>
+
+	    <!-- AngularJS Material Dependencies -->
+    	<script src="/scripts/angular-animate.min.js"></script>
 
 	    <!-- Angular module -->
 		<script src="/app.js"></script>
@@ -35,6 +40,7 @@
 			                <th>Source Name</th>
 			                <th>IP Address</th>
 			                <th>Mission Name</th>
+			                <th>Simulated</th>
 			                <th>File</th>
 			                <th>Upload</th>
 			            </tr>
@@ -55,7 +61,15 @@
 			        		<td>
 			        			<input type="text" name="mission" class="form-control" ng-model="ctrl.config.mission" required>
 			        			<span ng-show="ctrl.upload_form.mission.$error.required && !ctrl.upload_form.mission.$pristine">This field is required!</span>
-			        		</td>
+							</td>
+							<td>
+								<select ng-model="ctrl.config.simulated" name="simulated" class="form-control" required>
+									<option value="">Select</option>
+									<option value="yes">Yes</option>
+									<option value="no">No</option>
+								</select>
+								<span ng-show="ctrl.upload_form.simulated.$error.required && !ctrl.upload_form.simulated.$pristine">This field is required!</span>
+							</td>
 			        		<td>
 			        			<div class="input-group">
 			        				<label class="input-group-btn">
@@ -86,14 +100,23 @@
 		                <th>IP Address</th>
 		                <th>Mission Name</th>
 		                <th>File Name</th>
+		                <th>Simulated</th>
+		                <th>Attachments</th>
+		                <th></th>
 		            </tr>
 		        </thead>
 		        <tbody class="details">
 			     	<tr ng-repeat="config in ctrl.configlist">
-			     	    <td>{{ config.source.name }}</td>
+						<td>{{ config.source.name }}</td>
 			            <td>{{ config.source.ipaddress }}</td>
 			            <td>{{ config.mission }}</td>
 		                <td>{{ config.source.filename }}</td>
+		                <td><div ng-if="config.simulated">&#10004;</td>
+		                <td><a ng-click="ctrl.showModal(config.mission,config.source.ipaddress)" title="Attach Files">
+		                	<img class="aggFileIcon" ng-src="../../public/media/icons/attachment-vertical-paperclip.svg"/>
+		                	</a>
+		                </td>
+		                <td class="itemclose" ng-click="ctrl.removeConfig(config.source.ipaddress)">&times;</td>
 			        </tr>
 			    </tbody>
 		    </table>

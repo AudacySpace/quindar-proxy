@@ -1,17 +1,22 @@
 app
 .controller('IndexCtrl', function ($scope) {
-    $scope.source = "/adminMongo";
+    $scope.source = "/sources";
 
-    $scope.tabs = [ 
-        {
-            title: 'Database',
-            icon: 'media/icons/icon-database-config.svg',
-            source: '/adminMongo'
-        },
+    $scope.tabs = [
         {
             title: 'Configuration Sources',
             icon: 'media/icons/icon-data-sources.svg',
             source: '/sources'
+        },
+        {
+            title: 'Image Upload',
+            icon: 'media/icons/icon-upload-image.svg',
+            source: '/imageuploads'
+        },
+        {
+            title: 'Timeline',
+            icon: 'media/icons/icon-upload-timeline.svg',
+            source: '/timelineuploads'
         },
         {
             title: 'Netdata',

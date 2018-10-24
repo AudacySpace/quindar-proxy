@@ -1,0 +1,14 @@
+{
+	"ATest" : {
+		"library" : "../scripts/gmat.js"
+	},
+	"AZero" : {
+		"library" : "../scripts/simulator.js"
+	},
+	"Audacy Zero" : {
+		"library" : "../scripts/zero.js"
+	},
+	"ASim" : {
+		"library" : "../scripts/zero.js"
+	}
+}
