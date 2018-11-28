@@ -30,51 +30,6 @@ module.exports = function(io) {
 		    }
 		});
 
-		//poll database for new commands and send them to satellite/simulator
-		setInterval(function() {
-			Command.find( {'sent_to_satellite': false}, function(err, commands) {
-	            if(err){
-	                console.log(err);
-	            }
-
-	            if(commands) {
-		            if(commands.length>0) {
-						for(var i=0; i<commands.length; i++){
-							var newcommand = {
-								"mission":"",
-								"timestamp":"",
-								"metadata":{},
-								"command":""
-							};
-
-							//set the json object to be sent to the. source
-							newcommand.mission = commands[i].mission;
-							newcommand.timestamp = commands[i].sent_timestamp;
-							newcommand.metadata.cmd = commands[i].name;
-							newcommand.metadata.arg = commands[i].arguments;
-							newcommand.command = "";
-
-							if(clients[commands[i].mission]) {
-								var room = clients[commands[i].mission]["socket"];
-								if(room) {
-									io.to(room).emit("command", newcommand);
-									commands[i].sent_to_satellite = true;
-
-									commands[i].save(function(err,result){
-										if(err){
-											console.log(err);
-										}
-
-										console.log("Flag updated for sent command");
-									})
-								}
-							}
-			            }
-		            }
-		        }
-	        });
-		}, 1000);
-
 		socket.on('comm-ack', function(data){
 			var commandResponse = JSON.parse(data);
 			if(commandResponse.metadata && commandResponse.metadata.sent_timestamp){
@@ -105,4 +60,69 @@ module.exports = function(io) {
 
 		});
 	});
+
+	//poll database for new commands and send them to satellite/simulator
+	setInterval(function() {
+		Command.find( {'sent_to_satellite': false}, function(err, commands) {
+			if(err){
+				console.log(err);
+			}
+
+			if(commands) {
+				if(commands.length>0) {
+					for(var i=0; i<commands.length; i++){
+						var currentUnixTime = new Date().getTime();
+						if(clients[commands[i].mission]) {
+							var newcommand = {
+								"mission":"",
+								"timestamp":"",
+								"metadata":{},
+								"command":""
+							};
+
+							//set the json object to be sent to the. source
+							newcommand.mission = commands[i].mission;
+							newcommand.timestamp = commands[i].sent_timestamp;
+							newcommand.metadata.cmd = commands[i].name;
+							newcommand.metadata.arg = commands[i].arguments;
+							newcommand.command = "";
+
+							var room = clients[commands[i].mission]["socket"];
+							if(room) {
+								io.to(room).emit("command", newcommand);
+								commands[i].sent_to_satellite = true;
+								commands[i].response.push({
+									"status" : "sent to gateway",
+									"gwp_timestamp" : currentUnixTime,
+								});
+
+								commands[i].save(function(err,result){
+									if(err){
+										console.log(err);
+									}
+
+									console.log("Flag updated for sent command");
+								})
+							}
+						} else {
+							//cancel commands
+							commands[i].sent_to_satellite = true;
+							commands[i].response.push({
+								"status":"socket not connected",
+								"gwp_timestamp": currentUnixTime
+							});
+
+							commands[i].save(function(err,result){
+								if(err){
+									console.log(err);
+								}
+
+								console.log("Flag updated for cancelled command");
+							})
+						}
+					}
+				}
+			}
+		});
+	}, 1000);
 }
