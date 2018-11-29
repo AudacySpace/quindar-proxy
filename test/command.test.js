@@ -158,7 +158,7 @@ describe('Test Suite for Command Model ', function() {
     it('should invalidate if locked is not defined', function() {
         var m = new CMD({
             name: 'pointing',
-            sent_timestamp:'2018-02-09T13:09:17.471Z,
+            sent_timestamp:'2018-02-09T13:09:17.471Z',
             arguments:'earth',
             user:'taruni.gattu@gmail.com',
             mission:'AZero',
@@ -176,7 +176,7 @@ describe('Test Suite for Command Model ', function() {
     it('should invalidate if sent is not a defined', function() {
         var m = new CMD({
             name: 'pointing',
-            sent_timestamp:'2018-02-09T13:09:17.471Z,
+            sent_timestamp:'2018-02-09T13:09:17.471Z',
             arguments:'earth',
             user:'taruni.gattu@gmail.com',
             mission:'AZero',
