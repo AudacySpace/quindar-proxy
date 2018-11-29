@@ -13,7 +13,7 @@ var commandSchema = mongoose.Schema({
 	},
 	sent_timestamp : {
 		type : Date,
-		required: true
+		required: false
 	},
 	user : {
 		type : String,
@@ -28,12 +28,24 @@ var commandSchema = mongoose.Schema({
 	},
 	sent_to_satellite : {
 		type : Boolean,
-		required: true
+		required: false
 	},
 	time : {
 		type : String,
-		required: true
-	}
+		required: false
+	},
+    entered : {
+		type : Boolean,
+		required : true
+    },
+    locked : {
+		type : Boolean,
+		required : true
+    },
+    sent : {
+		type : Boolean,
+		required : true
+    }
 
 });
 
