@@ -21,6 +21,12 @@ If you found a bug,
 
 ## Contributing to the Quindar code
 
+### Pre-requisites
+
+* Install Git, e.g. `yum install -y git`
+* Install Docker (https://docs.docker.com/engine/installation/)
+* Install MongoDB on your desktop/server (https://docs.mongodb.com/manual/administration/install-community/).
+
 ### Style Guides
 We're not super strict on style guides yet, but as Quindar grows and we increasingly automate the DevOps / QA processes, consistent coding style is increasingly important. To future proof your code, please consult the following guidelines:
 
@@ -61,15 +67,23 @@ Follow steps to build and deploy the container on localhost. Shared Drives featu
     docker build -t "quindar-qsvr" .
     cd ../../quindar-proxy
     npm install
-    docker run -d -t --name qsvr --cap-add SYS_PTRACE -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v $(pwd):/node/proxy/ -p 80:80 -p 443:443 -p 27017:27017 quindar-qsvr
+    docker run -d -t --name qsvr --cap-add SYS_PTRACE -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v $(pwd):/node/proxy/ -p 80:80 -p 443:443 quindar-qsvr
 
-The UI should be up and running on: http://localhost. Click on Login to get started. Use **mongodb://admin@localhost** as connection string to use the local Mongo database.
+The UI should be up and running on: http://localhost.
 
 Notes:
 
 1. $(pwd) is the present working directory which over here is the path on your local machine to quindar-proxy repository. Windows users can replace $(pwd) with the absolute path to the quindar-proxy directory. 
 
 2. For Windows users, enable Shared Drives in Docker settings to use the above docker run command.
+
+3. Update databaseURL in /server/config/config.env.js to point to your database under LOCAL ENVIRONMENT. Currently, it is generic(written below) as it assumes that user has a mongo database on localhost on port 27017.
+
+        mongodb://localhost:27017/quindar
+        
+    The format to be used for databaseURL is given below
+
+        mongodb://<host IP address>:<host port>/<database name>
 
 ### Building new features/bug fixes for Quindar Proxy
 1. Create your own branch
@@ -97,8 +111,6 @@ Notes:
 
 ## To Do
 
-* improved user interface based on Angular
-* QUindar netdash telemetry as a data source
 * security hardening
 * admin / user management functions
 
