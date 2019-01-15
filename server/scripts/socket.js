@@ -89,20 +89,22 @@ module.exports = function(io) {
 
 							var room = clients[commands[i].mission]["socket"];
 							if(room) {
-								io.to(room).emit("command", newcommand);
+								//update command to be sent
 								commands[i].sent_to_satellite = true;
 								commands[i].response.push({
 									"status" : "sent to gateway",
 									"gwp_timestamp" : currentUnixTime,
 								});
-
+								//save the modify command
 								commands[i].save(function(err,result){
 									if(err){
 										console.log(err);
 									}
 
 									console.log("Flag updated for sent command");
-								})
+								});
+								//send the command to source through socket
+								io.to(room).emit("command", newcommand);
 							}
 						} else {
 							//cancel commands

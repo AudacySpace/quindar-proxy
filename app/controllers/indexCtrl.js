@@ -23,11 +23,11 @@ app
             icon: 'media/icons/icon-server-status.svg',
             source: '/netdata'
         },
-        {
-            title: 'Documentation',
-            icon: 'media/icons/icon-documents.svg',
-            source: '/help'
-        }
+        // {
+        //     title: 'Documentation',
+        //     icon: 'media/icons/icon-documents.svg',
+        //     source: '/help'
+        // }
     ];
 
     $scope.changeSource = function(source){
