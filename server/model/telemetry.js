@@ -23,6 +23,10 @@ var telemetrySchema = mongoose.Schema({
 		type : Object,
 		required: true
 	},
+	status : {
+		type : Boolean,
+		required: true
+	}
 }, { collection: 'telemetry' });
 
 // define index on telemetry collection for fast retrieval of data

@@ -1,5 +1,5 @@
 //mission library for Audacy Zero
-module.exports = function(socket) {
+module.exports = function() {
 
 	var math = require('mathjs');
 	var async = require('async');
@@ -24,14 +24,14 @@ module.exports = function(socket) {
 			//Load the configuration from database
 			function(callback) {
 				//test data when no socket connection
-				// source = "10.0.0.100";
+				// source = "172.27.1.11";
 				// parsedData= {
 				// 	'metadata' : {
-				// 		'id' : 5
+				// 		'id' : 0
 				// 	},
 				// 	'data' : '1011111110001100110011001100110111000101010110001000000011000101010110000000110001111011110001010101100010110110000010010101001000110001111111111111111111111111111111111111111',
-				// 	'timestamp' : '1527032088',
-				// 	'mission' : 'Test'
+				// 	'timestamp' : 1517478125288,
+				// 	'mission' : 'ASim'
 				// };
 				if(parsedData.hasOwnProperty("metadata")){
 					var metadata = parsedData["metadata"];
@@ -72,75 +72,79 @@ module.exports = function(socket) {
 				if(configuration.attachments !== undefined){
 					var agg = configuration.attachments[0];
 					var bitStream = parsedData['data'];
-
-					var aggObj = new Object();
-					for (var i=0; i<agg.data.length; i++){
-						var paramValue = bitStream.substr(0, agg.data[i].Bits);
-						bitStream = bitStream.substr(agg.data[i].Bits);
-						aggObj[agg.data[i].Parameter] = paramValue;
-					}
-
-					parsedData['data'] = aggObj;
-
 					var newTelemetry = new Object();
 					newTelemetry['mission'] = parsedData['mission'];
 					newTelemetry['source'] = configuration.source.name;
 					newTelemetry['timestamp'] = new Date(parsedData['timestamp']);
 					var telemetry = new Object();
 
-					for (var point in parsedData['data']) {
-						//create new object for each configuration data point
-						telemetry[point] = new Object();
-						telemetry[point].rawValue = parsedData['data'][point];
+					if(bitStream !== ""){
 
-						//convert parsedData['data'][point] from hex to decimal
-						parsedData['data'][point] = convertType(parsedData['data'][point], configuration.contents[point].datatype);
-						//parsedData['data'][point] = parsedData['data'][point];
-					}
-
-					for (var point in parsedData['data']) {
-						telemetry[point].notes = configuration.contents[point].description;
-						telemetry[point].units = configuration.contents[point].units;
-
-						if(configuration.contents[point].datatype == "timestamp"){
-							try {
-								parsedData['data'][point] = unix2Date(parsedData['data'][point]);
-								telemetry[point].alarm_low = unix2Date(configuration.contents[point].alarm_low);
-								telemetry[point].alarm_high = unix2Date(configuration.contents[point].alarm_high);
-								telemetry[point].warn_low = unix2Date(configuration.contents[point].warn_low);
-								telemetry[point].warn_high = unix2Date(configuration.contents[point].warn_high);
-							} catch (e) {
-								console.log("Error converting unix date: " + e);
-							}
-						} else {
-							telemetry[point].alarm_low = configuration.contents[point].alarm_low;
-							telemetry[point].alarm_high = configuration.contents[point].alarm_high;
-							telemetry[point].warn_low = configuration.contents[point].warn_low;
-							telemetry[point].warn_high = configuration.contents[point].warn_high;
+						var aggObj = new Object();
+						for (var i=0; i<agg.data.length; i++){
+							var paramValue = bitStream.substr(0, agg.data[i].Bits);
+							bitStream = bitStream.substr(agg.data[i].Bits);
+							aggObj[agg.data[i].Parameter] = paramValue;
 						}
 
-						if(configuration.contents[point].expression) {
-							var datatype = configuration.contents[point].datatype;
-							if(datatype == "timestamp" || datatype == "raw" || datatype == "hex") {
-								//for these datatypes, store the value in the data stream as it is
-								telemetry[point].value = parsedData['data'][point];
-							} else {
-								//expression mode,  evaluate the expression and store it
+						parsedData['data'] = aggObj;
+
+						for (var point in parsedData['data']) {
+							//create new object for each configuration data point
+							telemetry[point] = new Object();
+							telemetry[point].rawValue = parsedData['data'][point];
+
+							//convert parsedData['data'][point] from hex to decimal
+							parsedData['data'][point] = convertType(parsedData['data'][point], configuration.contents[point].datatype);
+							//parsedData['data'][point] = parsedData['data'][point];
+						}
+
+						for (var point in parsedData['data']) {
+							telemetry[point].notes = configuration.contents[point].description;
+							telemetry[point].units = configuration.contents[point].units;
+
+							if(configuration.contents[point].datatype == "timestamp"){
 								try {
-									var code = math.compile(configuration.contents[point].expression);
-									telemetry[point].value = code.eval(parsedData['data']);
+									parsedData['data'][point] = unix2Date(parsedData['data'][point]);
+									telemetry[point].alarm_low = unix2Date(configuration.contents[point].alarm_low);
+									telemetry[point].alarm_high = unix2Date(configuration.contents[point].alarm_high);
+									telemetry[point].warn_low = unix2Date(configuration.contents[point].warn_low);
+									telemetry[point].warn_high = unix2Date(configuration.contents[point].warn_high);
 								} catch (e) {
-									console.log("Error evaluating expressions using Mathjs: " + e)
+									console.log("Error converting unix date: " + e);
 								}
+							} else {
+								telemetry[point].alarm_low = configuration.contents[point].alarm_low;
+								telemetry[point].alarm_high = configuration.contents[point].alarm_high;
+								telemetry[point].warn_low = configuration.contents[point].warn_low;
+								telemetry[point].warn_high = configuration.contents[point].warn_high;
 							}
-						} else {
-							//value mode, store the value in the data stream as it is
-							telemetry[point].value = parsedData['data'][point];
+
+							if(configuration.contents[point].expression) {
+								var datatype = configuration.contents[point].datatype;
+								if(datatype == "timestamp" || datatype == "raw" || datatype == "hex") {
+									//for these datatypes, store the value in the data stream as it is
+									telemetry[point].value = parsedData['data'][point];
+								} else {
+									//expression mode,  evaluate the expression and store it
+									try {
+										var code = math.compile(configuration.contents[point].expression);
+										telemetry[point].value = code.eval(parsedData['data']);
+									} catch (e) {
+										console.log("Error evaluating expressions using Mathjs: " + e)
+									}
+								}
+							} else {
+								//value mode, store the value in the data stream as it is
+								telemetry[point].value = parsedData['data'][point];
+							}
+
 						}
 
+						newTelemetry['telemetry'] = Helper.convert(telemetry);
+					} else {
+						newTelemetry['telemetry'] = {};
 					}
-
-					newTelemetry['telemetry'] = Helper.convert(telemetry);
 
 					Helper.mergeTelm(newTelemetry, function(err, response){
 						if(err){
