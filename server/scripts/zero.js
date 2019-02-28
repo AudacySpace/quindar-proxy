@@ -1,5 +1,5 @@
 //mission library for Audacy Zero
-module.exports = function() {
+module.exports = function(socket) {
 
 	var math = require('mathjs');
 	var async = require('async');
