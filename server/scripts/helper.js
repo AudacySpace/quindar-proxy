@@ -28,6 +28,12 @@ module.exports = {
 				mergedTelemetry['telemetry'] = tempTelemetry.telemetry;
 				mergedTelemetry['createdDate'] = new Date();
 
+				if(isEmpty(newTelemetry.telemetry)){
+					mergedTelemetry['status'] = false;
+				} else {
+					mergedTelemetry['status'] = true;
+				}
+
 				mergedTelemetry.save(function(err) { 
 					if (err) {
 						callback(err);
@@ -53,6 +59,7 @@ module.exports = {
 		});
 		return result;
 	}
+	    
 }
 
 //function returning key and value of the object as a callback function
@@ -62,4 +69,12 @@ function eachKeyValue(obj, fun) {
 			fun(i, obj[i]);
 		}
 	}
+}
+
+function isEmpty(obj){
+	for(var key in obj) {
+	        if(obj.hasOwnProperty(key))
+	            return false;
+	    }
+	    return true;
 }
