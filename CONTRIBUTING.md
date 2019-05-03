@@ -16,7 +16,7 @@ If you are subject to or witness unacceptable behavior, or have any other concer
 ## Reporting an Issue
 Quindar uses GitHub Issue Tracking to track issues (primarily bugs). 
 If you found a bug,
-* Ensure that the bug was not previously reported by searching on Github under [Issues](https://github.com/quindar/quindar-proxy/issues).
+* Ensure that the bug was not previously reported by searching on Github under [Issues](https://github.com/AudacySpace/quindar-proxy/issues).
 * If you are unable to find an existing open issue, open a new issue. It should have a clear and descriptive title, steps to reproduce the issue, expected and actual behavior. Include code samples, screenshots wherever needed.
 
 ## Contributing to the Quindar code
@@ -57,10 +57,10 @@ Clone the two repositories in a single folder, such as ~/repositories
     cd ~
     mkdir repositories
     cd repositories
-    git clone https://github.com/quindar/quindar-deploy.git
-    git clone https://github.com/quindar/quindar-proxy.git
+    git clone https://github.com/AudacySpace/quindar-deploy.git
+    git clone https://github.com/AudacySpace/quindar-proxy.git
     
-### Build and Run Docker container for Quindar GUI
+### Build and Run Docker container for Quindar Proxy
 Follow steps to build and deploy the container on localhost. Shared Drives feature of Docker is used to create a developer environment, where in the changes in your code are reflected on the docker container running locally on your computer.
 
     cd quindar-deploy/qsvr-backend
@@ -109,9 +109,5 @@ Notes:
 7. Issue a pull request for your code changes to be merged with the Quindar repository. Refer this [link](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) for the documentation.
 
 
-## To Do
-
-* security hardening
-* admin / user management functions
 
 
